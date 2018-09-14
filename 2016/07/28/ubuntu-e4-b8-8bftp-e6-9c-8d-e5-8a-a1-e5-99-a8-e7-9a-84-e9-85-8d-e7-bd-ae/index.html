@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Ubuntu下FTP服务器的配置 | BlBana&#39;s Blog 一只Web汪 ~</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Ubuntu下FTP服务器的配置 导语 有了服务器以后，就想往上面上传点东西了，于是乎就有了接下来的故事 FTP服务器搭建之旅 当然啦首先你得现有一个服务器~~">
+<meta name="keywords" content="Web安全,服务器配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu下FTP服务器的配置">
+<meta property="og:url" content="http://blbana.cc/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/index.html">
+<meta property="og:site_name" content="BlBana&#39;s Blog 一只Web汪 ~">
+<meta property="og:description" content="Ubuntu下FTP服务器的配置 导语 有了服务器以后，就想往上面上传点东西了，于是乎就有了接下来的故事 FTP服务器搭建之旅 当然啦首先你得现有一个服务器~~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.wdjimg.com/mms/icon/v1/0/8e/62c1cec239733d94ade53e8c37dae8e0_256_256.png">
+<meta property="og:image" content="http://123.206.79.232/img/FTP1.png">
+<meta property="og:updated_time" content="2018-09-14T18:29:08.685Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ubuntu下FTP服务器的配置">
+<meta name="twitter:description" content="Ubuntu下FTP服务器的配置 导语 有了服务器以后，就想往上面上传点东西了，于是乎就有了接下来的故事 FTP服务器搭建之旅 当然啦首先你得现有一个服务器~~">
+<meta name="twitter:image" content="http://img.wdjimg.com/mms/icon/v1/0/8e/62c1cec239733d94ade53e8c37dae8e0_256_256.png">
+  
+    <link rel="alternative" href="/atom.xml" title="BlBana&#39;s Blog 一只Web汪 ~" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/favicon.png">
+  
+  
+      <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  <!-- 加载特效 -->
+    <script src="/js/pace.js"></script>
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+  <script>
+      var yiliaConfig = {
+          rootUrl: '/',
+          fancybox: true,
+          animate: true,
+          isHome: false,
+          isPost: true,
+          isArchive: false,
+          isTag: false,
+          isCategory: false,
+          open_in_new: false
+      }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            
+            <img lazy-src="/img/head.jpg" class="js-avatar">
+            
+        </a>
+
+        <hgroup>
+          <h1 class="header-author"><a href="/" title="Hi Mate">BlBana</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">A interesting Web Dog~</p>
+        
+        
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/index.html">首页</a></li>
+                        
+                            <li><a href="/archives">所有文章</a></li>
+                        
+                            <li><a href="/tags">标签页</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fl mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=1iXYOD0d3gFFCC11&r=8a78462be569bc94330c32990aaf4f0e" title="mail">mail</a>
+                            
+                                <a class="fl github" target="_blank" href="https://github.com/BlBana" title="github">github</a>
+                            
+                                <a class="fl zhihu" target="_blank" href="https://www.zhihu.com/people/zhu-rong-ji-15/activities" title="zhihu">zhihu</a>
+                            
+                                <a class="fl weibo" target="_blank" href="#" title="weibo">weibo</a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <a href="/tags/CTF/" style="font-size: 12.5px;">CTF</a> <a href="/tags/PHP/" style="font-size: 17.5px;">PHP</a> <a href="/tags/PHP函数漏洞/" style="font-size: 10px;">PHP函数漏洞</a> <a href="/tags/SQL注入/" style="font-size: 15px;">SQL注入</a> <a href="/tags/SQL注入绕过/" style="font-size: 10px;">SQL注入绕过</a> <a href="/tags/Struts2/" style="font-size: 10px;">Struts2</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/WP/" style="font-size: 10px;">WP</a> <a href="/tags/Webshell/" style="font-size: 20px;">Webshell</a> <a href="/tags/Web安全/" style="font-size: 15px;">Web安全</a> <a href="/tags/Windows安全配置/" style="font-size: 15px;">Windows安全配置</a> <a href="/tags/blogs/" style="font-size: 10px;">blogs</a> <a href="/tags/docker/" style="font-size: 10px;">docker</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/waf绕过/" style="font-size: 10px;">waf绕过</a> <a href="/tags/上传漏洞/" style="font-size: 15px;">上传漏洞</a> <a href="/tags/上传绕过方法/" style="font-size: 10px;">上传绕过方法</a> <a href="/tags/代码执行/" style="font-size: 10px;">代码执行</a> <a href="/tags/修改密码/" style="font-size: 10px;">修改密码</a> <a href="/tags/命令执行漏洞/" style="font-size: 10px;">命令执行漏洞</a> <a href="/tags/安全编码/" style="font-size: 10px;">安全编码</a> <a href="/tags/安全配置/" style="font-size: 10px;">安全配置</a> <a href="/tags/宽字节注入/" style="font-size: 10px;">宽字节注入</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/文件包含/" style="font-size: 12.5px;">文件包含</a> <a href="/tags/服务器/" style="font-size: 15px;">服务器</a> <a href="/tags/服务器配置/" style="font-size: 20px;">服务器配置</a> <a href="/tags/沙盒/" style="font-size: 10px;">沙盒</a> <a href="/tags/漏洞复现/" style="font-size: 10px;">漏洞复现</a> <a href="/tags/绕过过滤/" style="font-size: 10px;">绕过过滤</a> <a href="/tags/转载/" style="font-size: 10px;">转载</a> <a href="/tags/运维/" style="font-size: 17.5px;">运维</a> <a href="/tags/邮件系统/" style="font-size: 10px;">邮件系统</a> <a href="/tags/随笔/" style="font-size: 10px;">随笔</a>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.0wen.cc">0wen</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">Web dog，会PHP，Python，代码审计，来有木有一起屁股的~</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="Me">BlBana</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                
+                    <img lazy-src="/img/head.jpg" class="js-avatar">
+                
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="Me">BlBana</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">A interesting Web Dog~</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/index.html">首页</a></li>
+                
+                    <li><a href="/archives">所有文章</a></li>
+                
+                    <li><a href="/tags">标签页</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                <div class="social">
+                    
+                        <a class="mail" target="_blank" href="https://mail.qq.com/cgi-bin/frame_html?sid=1iXYOD0d3gFFCC11&r=8a78462be569bc94330c32990aaf4f0e" title="mail">mail</a>
+                    
+                        <a class="github" target="_blank" href="https://github.com/BlBana" title="github">github</a>
+                    
+                        <a class="zhihu" target="_blank" href="https://www.zhihu.com/people/zhu-rong-ji-15/activities" title="zhihu">zhihu</a>
+                    
+                        <a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+                    
+                </div>
+            </nav>
+        </header>                
+    </div>
+</nav>
+      <div class="body-wrap"><article id="post-ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/" class="article-date">
+      <time datetime="2016-07-28T02:20:21.000Z" itemprop="datePublished">2016-07-28</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Ubuntu下FTP服务器的配置
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Web安全/">Web安全</a><a class="article-category-link" href="/categories/Web安全/服务器/">服务器</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Web安全/">Web安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/服务器配置/">服务器配置</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="Ubuntu下FTP服务器的配置"><a href="#Ubuntu下FTP服务器的配置" class="headerlink" title="Ubuntu下FTP服务器的配置"></a><strong>Ubuntu下FTP服务器的配置</strong></h1><p><img src="http://img.wdjimg.com/mms/icon/v1/0/8e/62c1cec239733d94ade53e8c37dae8e0_256_256.png" alt="image"></p>
+<h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><blockquote>
+<p>有了服务器以后，就想往上面上传点东西了，于是乎就有了接下来的故事 <code>FTP服务器搭建之旅</code></p>
+<p>当然啦首先你得现有一个服务器~~</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><h4 id="1-安装vsftpd"><a href="#1-安装vsftpd" class="headerlink" title="1. 安装vsftpd"></a>1. 安装vsftpd</h4><p>打开<strong>终端</strong>输入<code>sudo apt-get install vsftpd</code>安装vsftpd服务</p>
+<h4 id="2-判断vsftpd是否安装成功"><a href="#2-判断vsftpd是否安装成功" class="headerlink" title="2. 判断vsftpd是否安装成功"></a>2. 判断vsftpd是否安装成功</h4><p>在<strong>终端</strong>中输入<code>sudo service vsftpd restart</code>重启vsftpd服务</p>
+<h4 id="3-新建“-home-uftp”目录作为主目录"><a href="#3-新建“-home-uftp”目录作为主目录" class="headerlink" title="3. 新建“/home/uftp”目录作为主目录"></a>3. 新建“/home/uftp”目录作为主目录</h4><p>打开<strong>终端</strong> 输入<code>sudo mkdir /home/uftp</code> 成功创建目录</p>
+<h4 id="4-新建用户uftp并设置密码"><a href="#4-新建用户uftp并设置密码" class="headerlink" title="4. 新建用户uftp并设置密码"></a>4. 新建用户uftp并设置密码</h4><p>在<strong>终端</strong>中输入<code>sudo useradd -d /home/uftp -s /bin/bash uftp</code><br>输入<code>sudo passwd uftp</code>设置用户uftp的密码</p>
+<h4 id="5-修改配置文件-etc-vsftpd-conf"><a href="#5-修改配置文件-etc-vsftpd-conf" class="headerlink" title="5.修改配置文件/etc/vsftpd.conf"></a>5.修改配置文件/etc/vsftpd.conf</h4><p>修改配置文件<strong>vsftpd.conf</strong></p>
+<pre><code>在配置文件中加入如下配置
+&lt;span class=&quot;hljs-constant&quot;&gt;userlist_deny&lt;/span&gt;=NO
+&lt;span class=&quot;hljs-constant&quot;&gt;userlist_enable&lt;/span&gt;=YES
+&lt;span class=&quot;hljs-constant&quot;&gt;userlist_file&lt;/span&gt;=/etc/allowed_users //文件中的用户及可以连接服务器的用户
+</code></pre><h4 id="6-没有allowed-users的需手动创建"><a href="#6-没有allowed-users的需手动创建" class="headerlink" title="6.没有allowed_users的需手动创建"></a>6.没有allowed_users的需手动创建</h4><h4 id="7-查看文件-etc-ftpusers"><a href="#7-查看文件-etc-ftpusers" class="headerlink" title="7.查看文件/etc/ftpusers"></a>7.查看文件/etc/ftpusers</h4><p>查看文件<em>ftpusers</em>看如果存在用户名uftp,需要删除此用户，此文件中的用户即禁止连接服务器的用户</p>
+<hr>
+<p>通过以上的操作即可完成基本的<strong>FTP服务器的配置</strong>,需要注意的是在配置的过程中如果需要<strong>上传文件</strong>，则需要在配置文件<strong>vsftpd.conf</strong>中添加上对应的写权限<code>write_enable=YES</code>才能使其正常的进行连接上传 <img src="http://123.206.79.232/img/FTP1.png" alt="image"></p>
+<hr>
+<p>此次blog,是我第一次写blog，同样也是第一次使用<strong>markdow</strong>，感觉确实很赞，简单好用，以后我的博客还会不断更新<strong>Web</strong>和<strong>Web安全</strong>方面的内容</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/">Ubuntu下FTP服务器的配置</a></p>
+        <p><span>文章作者:</span><a href="/" title="访问 BlBana 的个人博客">BlBana</a></p>
+        <p><span>发布时间:</span>2016年07月28日 - 10时20分</p>
+        <p><span>最后更新:</span>2018年09月14日 - 18时29分</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/" title="Ubuntu下FTP服务器的配置">http://blbana.cc/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blbana.cc/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/　　作者: BlBana" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script src="/js/clipboard.min.js"></script>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+<nav id="article-nav">
+  
+    <a href="/2016/07/28/webshell-ef-bc-88-e4-b8-80-ef-bc-89-e9-80-9a-e8-bf-87phmyadmin-e5-af-bc-e5-87-ba-e4-b8-80-e5-8f-a5-e8-af-9d/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Webshell（一）通过phmyadmin导出一句话
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/28/sql-e6-b3-a8-e5-85-a5-e5-85-a5-e9-97-a8-e4-b9-8baccess-e6-b3-a8-e5-85-a5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">SQL注入入门之ACCESS注入</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Ubuntu下FTP服务器的配置"><span class="toc-number">1.</span> <span class="toc-text">Ubuntu下FTP服务器的配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#导语"><span class="toc-number">1.1.</span> <span class="toc-text">导语</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#正文"><span class="toc-number">1.1.1.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-安装vsftpd"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">1. 安装vsftpd</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-判断vsftpd是否安装成功"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">2. 判断vsftpd是否安装成功</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-新建“-home-uftp”目录作为主目录"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">3. 新建“/home/uftp”目录作为主目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-新建用户uftp并设置密码"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">4. 新建用户uftp并设置密码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-修改配置文件-etc-vsftpd-conf"><span class="toc-number">1.1.1.5.</span> <span class="toc-text">5.修改配置文件/etc/vsftpd.conf</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-没有allowed-users的需手动创建"><span class="toc-number">1.1.1.6.</span> <span class="toc-text">6.没有allowed_users的需手动创建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-查看文件-etc-ftpusers"><span class="toc-number">1.1.1.7.</span> <span class="toc-text">7.查看文件/etc/ftpusers</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script>
+    var valueHide = "隐藏目录";
+    var valueShow = "显示目录";
+
+    if ($(".left-col").is(":hidden")) {
+        $("#tocButton").attr("value", valueShow);
+    }
+    $("#tocButton").click(function() {
+        if ($("#toc").is(":hidden")) {
+            $("#tocButton").attr("value", valueHide);
+            $("#toc").slideDown(320);
+        }
+        else {
+            $("#tocButton").attr("value", valueShow);
+            $("#toc").slideUp(350);
+        }
+    })
+    if ($(".toc").length < 1) {
+        $("#toc, #tocButton").hide();
+    }
+</script>
+
+
+
+
+
+<div class="bdsharebuttonbox">
+	<a href="#" class="fx fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+	<a href="#" class="fx fa-weixin bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+	<a href="#" class="fx fa-qq bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+	<a href="#" class="fx fa-facebook-official bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+	<a href="#" class="fx fa-twitter bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+	<a href="#" class="fx fa-linkedin bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+	<a href="#" class="fx fa-files-o bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/" data-title="Ubuntu下FTP服务器的配置" data-url="http://blbana.cc/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"blbana"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = '/js/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    <!-- 多说公共JS代码 end -->
+</div>
+
+    
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/07/28/webshell-ef-bc-88-e4-b8-80-ef-bc-89-e9-80-9a-e8-bf-87phmyadmin-e5-af-bc-e5-87-ba-e4-b8-80-e5-8f-a5-e8-af-9d/" title="上一篇: Webshell（一）通过phmyadmin导出一句话">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+        
+            <a href="/2016/07/28/sql-e6-b3-a8-e5-85-a5-e5-85-a5-e9-97-a8-e4-b9-8baccess-e6-b3-a8-e5-85-a5/" title="下一篇: SQL注入入门之ACCESS注入">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/09/14/20180914-回归博客/">emmm...诈尸Test</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/20/SQLi-——-逗号，空格，字段名过滤突破/">SQLi —— 逗号，空格，字段名过滤突破</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/08/Struts2远程命令执行漏洞/">Struts2远程命令执行漏洞</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/19/PHP-s-mail-远程代码执行/">PHP's mail()远程代码执行</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/Pwnhub外传第一关总结/">Pwnhub外传第一关总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/14/论如何修改Win10密码/">论如何修改Win10密码</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/05/Mysql宽字节注入/">Mysql宽字节注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/05/Wordpress迁移hexo踩坑指南/">Wordpress迁移hexo踩坑指南</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/">文件包含漏洞（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/">通过Tomcat获取Webshell</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/">Mysql报错注入原理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/08/初玩docker总结/">初玩docker总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/19/waf-e7-bb-95-e8-bf-87-e6-80-bb-e7-bb-93-ef-bc-88-e8-bd-ac-e8-bd-bd-ef-bc-89/">waf绕过总结（转载）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/">PHP反序列化漏洞复现</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/">百度杯CTF--第一周 writeup</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/08/11/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e/">文件包含漏洞</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/08/08/e5-9d-91-e7-88-b9-e7-9a-84ftp-e6-9c-8d-e5-8a-a1-e5-99-a8-ef-bc-81-ef-bc-81-ef-bc-81/">坑爹的FTP服务器 ！！！</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/08/02/iisphpmysql-e7-8e-af-e5-a2-83-e6-90-ad-e5-bb-ba/">IIS+PHP+MySql环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/30/php-ini-e5-ae-89-e5-85-a8-e9-85-8d-e7-bd-ae/">PHP.ini安全配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/30/apache-e6-9c-8d-e5-8a-a1-e5-99-a8-e5-a4-9a-e7-ab-99-e7-82-b9-e9-85-8d-e7-bd-ae/">Apache服务器多站点配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/30/windows-e6-9c-8d-e5-8a-a1-e5-99-a8-e5-9f-ba-e6-9c-ac-e6-a6-82-e5-bf-b5/">Windows服务器基本概念</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/30/158/">文件上传漏洞（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/">记一次曲折的注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/28/webshell-e6-8f-90-e6-9d-83-ef-bc-88-e4-b8-80-ef-bc-89/">Webshell提权（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/28/webshell-ef-bc-88-e4-b8-80-ef-bc-89-e9-80-9a-e8-bf-87phmyadmin-e5-af-bc-e5-87-ba-e4-b8-80-e5-8f-a5-e8-af-9d/">Webshell（一）通过phmyadmin导出一句话</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/">Ubuntu下FTP服务器的配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/28/sql-e6-b3-a8-e5-85-a5-e5-85-a5-e9-97-a8-e4-b9-8baccess-e6-b3-a8-e5-85-a5/">SQL注入入门之ACCESS注入</a></li></ul>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+    <script>
+        $(".post-list").addClass("toc-article");
+        $(".post-list-item a").attr("target","_blank");
+        $("#post-nav-button > a:nth-child(2)").click(function() {
+            $(".fa-bars, .fa-times").toggle();
+            $(".post-list").toggle(300);
+            if ($(".toc").length > 0) {
+                $("#toc, #tocButton").toggle(200, function() {
+                    if ($(".switch-area").is(":visible")) {
+                        $("#tocButton").attr("value", valueHide);
+                        }
+                    })
+            }
+            else {
+            }
+        })
+    </script>
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                &copy; 2018 BlBana
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank">spfk</a> by luuman
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" >海贼到访数: 
+                            <span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>, </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit">本页阅读量: 
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var backgroundnum = 5;
+            var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+            $("#mobile-nav").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+            $(".left-col").css({"background-image": backgroundimg,"background-size": "cover","background-position": "center"});
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    $(document).ready(function() {
+        if ($("#comments").length < 1) {
+            $("#scroll > a:nth-child(2)").hide();
+        };
+    })
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+  <script language="javascript">
+    $(function() {
+        $("a[title]").each(function() {
+            var a = $(this);
+            var title = a.attr('title');
+            if (title == undefined || title == "") return;
+            a.data('title', title).removeAttr('title').hover(
+
+            function() {
+                var offset = a.offset();
+                $("<div id=\"anchortitlecontainer\"></div>").appendTo($("body")).html(title).css({
+                    top: offset.top - a.outerHeight() - 15,
+                    left: offset.left + a.outerWidth()/2 + 1
+                }).fadeIn(function() {
+                    var pop = $(this);
+                    setTimeout(function() {
+                        pop.remove();
+                    }, pop.text().length * 800);
+                });
+            }, function() {
+                $("#anchortitlecontainer").remove();
+            });
+        });
+    });
+</script>
+
+
+  </div>
+</body>
+</html>
