@@ -54,7 +54,7 @@ include 'phar://shell.phar/shell.php';
 
 这样就可以成功把shell包含进来。当我们把shell.phar文件重命名为shell.aaa等一些无效的后缀名时，一样可以使用，说明了phar文件不受文件格式的影响。
 
-![](http://www.blbana.cc/wp-content/uploads/2016/12/5e01b381ad62e11dd74805a4177bc152.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/5e01b381ad62e11dd74805a4177bc152.png)
 
 ### 0x04 思路
 
@@ -109,7 +109,7 @@ echo $data;
 ?>
 `
 
-![](http://www.blbana.cc/wp-content/uploads/2016/12/d1660fedd8e4cfacdc61fbb3d39e1792.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/d1660fedd8e4cfacdc61fbb3d39e1792.png)
 
 (注意：需要allow_url_include = On 且 PHP &gt;= 5.2.0)
 
@@ -119,7 +119,7 @@ echo $data;
 
 http://localhost/test/phar%20LFI/postinput.php?file=data:text/plain;base64,PD9waHAKcGhwaW5mbygpOwo/Pg==
 
-![](http://www.blbana.cc/wp-content/uploads/2016/12/90d47eb1cb5e3f380948909548dee61d.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/90d47eb1cb5e3f380948909548dee61d.png)
 
 ## 
 

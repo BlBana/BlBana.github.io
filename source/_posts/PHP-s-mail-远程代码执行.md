@@ -31,7 +31,7 @@ PHP中的mail()函数在一定的条件下可以造成远程代码执行漏洞�
 5. Parameters    **参数设置**
 
 这里是第五个参数的详细介绍：
-![Alt text](http://blog.blbana.cc/img/hexo/mail%E5%87%BD%E6%95%B0/1.jpg)
+![Alt text](https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Mail-exec/1.jpg)
 
 这个参数主要的选项有：
 1. -O option = value
@@ -64,17 +64,17 @@ mail($to, $subject, $message, $headers, $options);
 我们指定好使用mail函数时的五个参数，在第二个参数中放入我们打算写入的内容，第五个参数中指定我们要写入的目录（**必须是PHP文件**）
 
 我们搭建好基本的环境以后尝试运行上面的代码，发现在我们指定的目下产生了一个rce.php的文件。
-![Alt text](http://blog.blbana.cc/img/hexo/mail%E5%87%BD%E6%95%B0/2.jpg)
+![Alt text](https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Mail-exec/2.jpg)
 
 里面有我们发送邮件的一些信息，发现我们的恶意代码已经被植入了这个文件当中，这个时候我们直接利用浏览器对这个文件进行访问，触发漏洞：
-![Alt text](http://blog.blbana.cc/img/hexo/mail%E5%87%BD%E6%95%B0/3.jpg)
+![Alt text](https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Mail-exec/3.jpg)
 
 我们已经可以执行一些系统命令了。
 
 ---
 对于这个漏洞我们还有第二种利用方法
 第五个参数还有一个-C参数，可以用来指定备用的配置文件，这时我们对于错误的目录文件，就会导致程序报错被记录到我们的配置文件中，导致了任意文件读取漏洞：
-![Alt text](http://blog.blbana.cc/img/hexo/mail%E5%87%BD%E6%95%B0/4.jpg)
+![Alt text](https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Mail-exec/4.jpg)
 
 这个漏洞已经出现在了一款邮件系统上，[Roundcube 1.2.2 远程命令执行漏洞分析](http://paper.seebug.org/138/)，漏洞主要成因就是使用了mail函数发送邮件，并且没有对输入的参数加以过滤，导致了漏洞的产生，文中已经给出了详细的介绍。
 

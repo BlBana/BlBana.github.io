@@ -31,7 +31,7 @@ sudo nsenter --target 3326 --mount --uts --ipc --net --pid
 
 要想保存更改过后的容器为镜像的话可以使用commit命令来保存：
 
-![](http://www.blbana.cc/wp-content/uploads/2016/10/48416f278a0da16dd7e1d5c997d9800e.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/48416f278a0da16dd7e1d5c997d9800e.png)
 
 记录好更改后的容器ID，使用命令：sudo docker commit &lt;ID&gt; &lt;name&gt;
 

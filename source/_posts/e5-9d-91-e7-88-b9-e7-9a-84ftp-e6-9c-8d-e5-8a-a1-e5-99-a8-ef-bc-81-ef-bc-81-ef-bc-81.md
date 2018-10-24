@@ -48,11 +48,11 @@ date: 2016-08-08 22:13:16
 
 首先先安装ftp的服务
 
-### ![](http://www.blbana.cc/wp-content/uploads/2016/08/d684bb6b62f86da21c1004411b961f02.png)
+### ![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/08/d684bb6b62f86da21c1004411b961f02.png)
 
 安装完成后添加一个ftp站点
 
-![](http://www.blbana.cc/wp-content/uploads/2016/08/dca6a56adcf2670b2b972657d5ef1199.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/08/dca6a56adcf2670b2b972657d5ef1199.png)
 
 &nbsp;
 
@@ -68,7 +68,7 @@ date: 2016-08-08 22:13:16
 
 &nbsp;
 
-![](http://www.blbana.cc/wp-content/uploads/2016/08/5bb96fc9955fe68cf47a99aec2ec0634.png)![](http://www.blbana.cc/wp-content/uploads/2016/08/7bac05efe6564e2fae766f31a89691ca.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/08/5bb96fc9955fe68cf47a99aec2ec0634.png)![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/08/7bac05efe6564e2fae766f31a89691ca.png)
 
 &nbsp;
 
@@ -78,7 +78,7 @@ date: 2016-08-08 22:13:16
 
 &nbsp;
 
-![](http://www.blbana.cc/wp-content/uploads/2016/08/af059f630115e5653f6d5f6daede801c.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/08/af059f630115e5653f6d5f6daede801c.png)
 
 OK，其实很简单的，需要注意的就是用户名的问题。
 

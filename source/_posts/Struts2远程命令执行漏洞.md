@@ -60,20 +60,20 @@ poc()
 2. struts 2.3.31
 
 1. 部署的方式比较容易，先安装好Tomcat的服务器，访问http://localhost:8080进行检测环境是否搭建成功。（需在服务器上配置好Java环境，参考连接：[Tomcat环境部署](http://drops.blbana.cc/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/%22Tomcat%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%22)）
-![enter image description here](http://blog.blbana.cc/img/hexo/Struts/1.png)
+![enter image description here](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/struts2/1.png)
 
 2. Tomcat的环境搭建完成了以后，可以进入struts2的官网下载存在漏洞的应用程序版本，利用刚才部署环境里的方法将struts2的war包导入到Tomcat的环境当中，访问搭建好的环境如下所示：
-![enter image description here](http://blog.blbana.cc/img/hexo/Struts/2.png)
+![enter image description here](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/struts2/2.png)
 
 3. 环境搭建完成以后，可以利用上面的PoC对其进行一个测试的操作
 > 注意：这个脚本需要安装poster的python类库才能正常运行
 我是在windows环境下进行测试的，直接运行python的脚本，填写好目标的地址，可以拿到一个执行命令的权限
-![enter image description here](http://blog.blbana.cc/img/hexo/Struts/3.png)
+![enter image description here](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/struts2/3.png)
 
 4. 接下来我们可以在公网的服务器上监听一个端口，然后利用命令执行反弹一个shell给服务器，直接获取服务器的权限
-![enter image description here](http://blog.blbana.cc/img/hexo/Struts/4.png)
+![enter image description here](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/struts2/4.png)
 
-![enter image description here](http://blog.blbana.cc/img/hexo/Struts/5.png)
+![enter image description here](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/struts2/5.png)
 
 5. 除此之外，当我们拿到了较高的权限的时候，还可以在我们的服务器上放一个webshell，然后通过执行命令将服务器上的webshell下载到目标机器上，这里注意的是需要**知道网站的真实路径**（*通过locate *.jsp来定位jsp文件的位置*），之后当获得了webshell的时候就可以得到文件管理，上传等权限了。
 

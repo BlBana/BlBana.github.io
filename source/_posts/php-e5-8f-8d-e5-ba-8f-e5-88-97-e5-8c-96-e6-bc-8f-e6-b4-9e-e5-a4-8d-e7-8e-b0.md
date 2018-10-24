@@ -18,7 +18,7 @@ date: 2016-09-16 16:12:33
 
 ### 漏洞代码：
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/00be3624e76e59c180034a9b97d6bc21.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/00be3624e76e59c180034a9b97d6bc21.png)
 
 ### 漏洞利用条件：
 
@@ -40,9 +40,9 @@ O:3:"foo":2:{s:4:"file";s:9:"shell.php";s:4:"data";s:4:"aaaa";}
 
 我们先通过上传之类的方法，将这个exp.txt上传到服务器当中，通过代码我们可以看出来，最后程序会将文件中的内容通过file_get_contents()函数读取出来，在程序执行完毕的时候，由于_destruct方法触发了代码执行。
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/b45134209b152bb6b391675af4f0d156.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/b45134209b152bb6b391675af4f0d156.png)
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/6b7d6e308f929c8475228629bbaaac84.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/6b7d6e308f929c8475228629bbaaac84.png)
 
 在同级目录下生成了一个shell.php，且内容为aaaa
 
@@ -56,17 +56,17 @@ O:3:"foo":2:{s:4:"file";s:9:"shell.php";s:4:"data";s:4:"&lt;?php @eval($_GET['Bl
 
 需要注意的是，在字符串中，前面的数字代表的是后面字符串中字符的个数，如果数字与字符个数不匹配的话，就会报错，并向shell.php中写入初始内容“text”，我在不同版本的PHP中测试了这种错误。
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/f92c2a37b60c3e1f6ddea06a651d126d.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/f92c2a37b60c3e1f6ddea06a651d126d.png)
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/5603752e0c398cd84d258cb7d40d42dd.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/5603752e0c398cd84d258cb7d40d42dd.png)
 
 在以上这两个版本中测试的时候，若我们序列化后的字符串不符合要求，就会抛出一个错误，并向shell.php中写入初始值。
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/e26f3d61a7b5fb173797e0dd53a95417.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/e26f3d61a7b5fb173797e0dd53a95417.png)
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/4ae2cf91bd4b5c53eeef6d3a6d242888.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/4ae2cf91bd4b5c53eeef6d3a6d242888.png)
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/aa2090e05aa0c0067950b7d0acf375dd.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/aa2090e05aa0c0067950b7d0acf375dd.png)
 
 但是在这个版本的PHP中，不会报错，但是依然是在shell.php中写入初始值。所以在利用的时候需要注意以上的内容。
 
@@ -74,7 +74,7 @@ O:3:"foo":2:{s:4:"file";s:9:"shell.php";s:4:"data";s:4:"&lt;?php @eval($_GET['Bl
 
 现在分析一下漏洞的一些细节，这是因为我们通过GET传递了参数给session_filename这个参数中，导致之后的函数file_get_contents读取了exp.txt中的字符串，之后字符串被反序列化为了foo的数组对象，导致了代码执行。
 
-![](http://www.blbana.cc/wp-content/uploads/2016/09/2747968806edf2c8fcc7e32d09b68783.png)
+![](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/2747968806edf2c8fcc7e32d09b68783.png)
 
 被反序列后产生的数组对象，相当于我们利用new foo（）生成了一个对象，但是，对象中的内容是以数组的形式存放的。
 
