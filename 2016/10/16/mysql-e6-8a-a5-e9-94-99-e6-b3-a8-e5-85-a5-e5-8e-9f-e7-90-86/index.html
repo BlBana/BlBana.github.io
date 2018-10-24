@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>Mysql报错注入原理 | BlBana&#39;s Blog 一只Web汪 ~</title>
@@ -13,15 +13,15 @@
 <meta property="og:site_name" content="BlBana&#39;s Blog 一只Web汪 ~">
 <meta property="og:description" content="导语一直使用mysql的报错注入，但是不清楚它的原理是什么，为什么会出现报错，我们使用到了floor(),rand(),count(*)三个函数，每个函数起到了什么作用，经过查阅资料，搞懂了报错的原因，现在总结一下。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/da8ef77c0269f9643e6c032b7af8d36f.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/486358675a2011d24e96b799282311a6.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/b1fc3c87e46ae7183f026ab831c0cc3d.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/b6afa9dc9e9c6718759502a192eec502.png">
-<meta property="og:updated_time" content="2018-09-14T18:37:43.999Z">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/da8ef77c0269f9643e6c032b7af8d36f.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/486358675a2011d24e96b799282311a6.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/b1fc3c87e46ae7183f026ab831c0cc3d.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/b6afa9dc9e9c6718759502a192eec502.png">
+<meta property="og:updated_time" content="2018-10-24T11:57:44.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql报错注入原理">
 <meta name="twitter:description" content="导语一直使用mysql的报错注入，但是不清楚它的原理是什么，为什么会出现报错，我们使用到了floor(),rand(),count(*)三个函数，每个函数起到了什么作用，经过查阅资料，搞懂了报错的原因，现在总结一下。">
-<meta name="twitter:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/da8ef77c0269f9643e6c032b7af8d36f.png">
+<meta name="twitter:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/da8ef77c0269f9643e6c032b7af8d36f.png">
   
     <link rel="alternative" href="/atom.xml" title="BlBana&#39;s Blog 一只Web汪 ~" type="application/atom+xml">
   
@@ -40,7 +40,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           rootUrl: '/',
@@ -54,7 +54,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -223,7 +223,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/" class="article-date">
@@ -233,7 +233,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -266,18 +266,18 @@
       
           
         <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>一直使用mysql的报错注入，但是不清楚它的原理是什么，为什么会出现报错，我们使用到了floor(),rand(),count(*)三个函数，每个函数起到了什么作用，经过查阅资料，搞懂了报错的原因，现在总结一下。<br><a id="more"></a></p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="0x01-原因"><a href="#0x01-原因" class="headerlink" title="0x01 原因"></a>0x01 原因</h3><p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/da8ef77c0269f9643e6c032b7af8d36f.png" alt=""></p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="0x01-原因"><a href="#0x01-原因" class="headerlink" title="0x01 原因"></a>0x01 原因</h3><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/da8ef77c0269f9643e6c032b7af8d36f.png" alt=""></p>
 <p>当我们这样使用SQL语句的时候就会出现报错。</p>
 <p>经过查阅资料发现，我们使用floor(rand(0)*2)时，报错的条件是必须有三条以上的数据必定会出现报错。</p>
 <p>但是当我们使用floor(rand()*2)时，结果就是随机的了，报错的几率和我们数据库中查询数据的条数没有了绝对的关系。</p>
-<h3 id="0x02-rand（）"><a href="#0x02-rand（）" class="headerlink" title="0x02 rand（）"></a>0x02 rand（）</h3><p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/486358675a2011d24e96b799282311a6.png" alt=""></p>
+<h3 id="0x02-rand（）"><a href="#0x02-rand（）" class="headerlink" title="0x02 rand（）"></a>0x02 rand（）</h3><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/486358675a2011d24e96b799282311a6.png" alt=""></p>
 <p>可以发现查询的两条记录都是随机的结果，没有什么规律。</p>
 <p>但是使用了随机因子以后floor(rand(0)*2)</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/b1fc3c87e46ae7183f026ab831c0cc3d.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/b1fc3c87e46ae7183f026ab831c0cc3d.png" alt=""></p>
 <p>可以看出来，两次查询的结果完全一样，01101100111011，都是这样的一个组合。说明我们使用了floor(rand(0)*2)是有规律的，那我们报错的原因又是什么呢。</p>
 <h3 id="0x03-count-和group-by"><a href="#0x03-count-和group-by" class="headerlink" title="0x03 count()和group by"></a>0x03 count()和group by</h3><p>当我们在使用语句select name,count(*) from webstar.my_article group by name;</p>
 <p>进行查询的时候，会统计出每个分组里面的数据条数。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/b6afa9dc9e9c6718759502a192eec502.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/b6afa9dc9e9c6718759502a192eec502.png" alt=""></p>
 <p>可以看到，辛弃疾的数据一共有两条，其他的都是一条。查阅资料知道了，当我们使用这条语句进行查询的时的流程是：</p>
 <p>1.先建立一个虚拟表；</p>
 <p>2.开始查询的时候，取出数据库数据，看看虚拟表中是否存在，如果存在就给count(*)字段加1，不存在就插入新纪录，创建一个key。</p>
@@ -305,7 +305,7 @@
         <p><span>本文标题:</span><a href="/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/">Mysql报错注入原理</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 BlBana 的个人博客">BlBana</a></p>
         <p><span>发布时间:</span>2016年10月16日 - 16时51分</p>
-        <p><span>最后更新:</span>2018年09月15日 - 02时37分</p>
+        <p><span>最后更新:</span>2018年10月24日 - 19时57分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/" title="Mysql报错注入原理">http://blbana.cc/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blbana.cc/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/　　作者: BlBana" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -313,7 +313,7 @@
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -345,7 +345,7 @@
     <strong class="toc-title">文章目录</strong>
     <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#导语"><span class="toc-number">1.</span> <span class="toc-text">导语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正文"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-原因"><span class="toc-number">2.1.</span> <span class="toc-text">0x01 原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-rand（）"><span class="toc-number">2.2.</span> <span class="toc-text">0x02 rand（）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-count-和group-by"><span class="toc-number">2.3.</span> <span class="toc-text">0x03 count()和group by</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-rand-0-2报错原理"><span class="toc-number">2.4.</span> <span class="toc-text">0x04 rand(0)*2报错原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x05-rand-2报错原理"><span class="toc-number">2.5.</span> <span class="toc-text">0x05 rand()*2报错原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
 </div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -464,8 +464,8 @@
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -474,7 +474,7 @@
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>

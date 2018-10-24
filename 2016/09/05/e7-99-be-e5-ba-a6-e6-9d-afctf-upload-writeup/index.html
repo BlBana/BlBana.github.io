@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>百度杯CTF--第一周 writeup | BlBana&#39;s Blog 一只Web汪 ~</title>
@@ -13,25 +13,25 @@
 <meta property="og:site_name" content="BlBana&#39;s Blog 一只Web汪 ~">
 <meta property="og:description" content="目的 这道题开始给的提示是flag.php中有flag，因此我们的目的就是读这个flag.php。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/7cc41055b2df1a9b480183913b32809e.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/d62522878aeaa5918594e519fac98dbe.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/e18719d581bf9f4d9f59413dcc0b6b00.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/1264b5c02738f094a5af03db9d3a4fda.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/d4b844ae06eb0072237b29a27a769747.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/c244d520c389e470226ab10cee68f025.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/fcb6e581b440477aab8261b34a7e0f8f.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/4ec5288d2dd719bc67f7d4f629118883.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/ddfaea289d90dd31b0c6e57edb28963c.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/f1ba0114e441d777824bc0c17c368f35.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/2b9986df2e490c3bebbc0958cb617e32.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/ca2b6ff33d00f9263080313030315390.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/859d088a4999c107559155b90ace5ad1.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/539fb29e4179e2a8e02719f332836608.png">
-<meta property="og:updated_time" content="2018-09-14T18:37:43.995Z">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/7cc41055b2df1a9b480183913b32809e.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/d62522878aeaa5918594e519fac98dbe.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/e18719d581bf9f4d9f59413dcc0b6b00.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/1264b5c02738f094a5af03db9d3a4fda.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/d4b844ae06eb0072237b29a27a769747.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/c244d520c389e470226ab10cee68f025.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/fcb6e581b440477aab8261b34a7e0f8f.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/4ec5288d2dd719bc67f7d4f629118883.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/ddfaea289d90dd31b0c6e57edb28963c.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/f1ba0114e441d777824bc0c17c368f35.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/2b9986df2e490c3bebbc0958cb617e32.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/ca2b6ff33d00f9263080313030315390.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/859d088a4999c107559155b90ace5ad1.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/539fb29e4179e2a8e02719f332836608.png">
+<meta property="og:updated_time" content="2018-10-24T11:57:44.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="百度杯CTF--第一周 writeup">
 <meta name="twitter:description" content="目的 这道题开始给的提示是flag.php中有flag，因此我们的目的就是读这个flag.php。">
-<meta name="twitter:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/7cc41055b2df1a9b480183913b32809e.png">
+<meta name="twitter:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/7cc41055b2df1a9b480183913b32809e.png">
   
     <link rel="alternative" href="/atom.xml" title="BlBana&#39;s Blog 一只Web汪 ~" type="application/atom+xml">
   
@@ -50,7 +50,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           rootUrl: '/',
@@ -64,7 +64,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -233,7 +233,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/" class="article-date">
@@ -243,7 +243,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -275,14 +275,14 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/7cc41055b2df1a9b480183913b32809e.png" alt=""></p>
+        <h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/7cc41055b2df1a9b480183913b32809e.png" alt=""></p>
 <p>这道题开始给的提示是flag.php中有flag，因此我们的目的就是读这个flag.php。<br><a id="more"></a></p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/d62522878aeaa5918594e519fac98dbe.png" alt=""></p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/d62522878aeaa5918594e519fac98dbe.png" alt=""></p>
 <p>进来后发现是一个上传界面，我们先尝试上传一些正常文件</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/e18719d581bf9f4d9f59413dcc0b6b00.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/1264b5c02738f094a5af03db9d3a4fda.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/e18719d581bf9f4d9f59413dcc0b6b00.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/1264b5c02738f094a5af03db9d3a4fda.png" alt=""></p>
 <p>是可以正常上传的，现在我们尝试上传一个.php的文件</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/d4b844ae06eb0072237b29a27a769747.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/d4b844ae06eb0072237b29a27a769747.png" alt=""></p>
 <p>上传后，发现我们代码里的&lt;?php被过滤了，导致代码无法正常解析，被当作字符串输出了。</p>
 <p>经过测试发现被过滤的是&lt;?和php，并且无法动态拼接绕过，但是php只是过滤了小写，大写字母并没有做出任何处理，我们可以通过大小写绕过php的过滤，&lt;?无论怎么拼接，都会被循环过滤掉，因此需要换一种思路。</p>
 <p>经过查询发现，php的标准标签其实有两种：</p>
@@ -290,29 +290,29 @@
 <p>2.&lt;script language=php&gt; &lt;/script&gt;            这里不存在&lt;?，我们不怕php无法被解析了</p>
 <hr>
 <p>现在我们需要构造一个没有php和&lt;?的脚本去上传</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/c244d520c389e470226ab10cee68f025.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/fcb6e581b440477aab8261b34a7e0f8f.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/c244d520c389e470226ab10cee68f025.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/fcb6e581b440477aab8261b34a7e0f8f.png" alt=""></p>
 <p>OK，我们代码正常运行了。现在可以去尝试读取flag.php的文件了。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/4ec5288d2dd719bc67f7d4f629118883.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/4ec5288d2dd719bc67f7d4f629118883.png" alt=""></p>
 <p>由于提示上说，flag在flag.php中，php需要为小写，否则无法读到正确的文件，但是我们代码里要是存在php的话就会被过滤掉，因此利用url编码，绕过开始对php的过滤。</p>
 <p>成功读到文件</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/ddfaea289d90dd31b0c6e57edb28963c.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/ddfaea289d90dd31b0c6e57edb28963c.png" alt=""></p>
 <hr>
 <p>当我们上传一句话的时候，就会被拦截，这时可以利用burp抓包进行截断绕过上传，成功上传含有一句话的脚本，尝试使用caidao连接，报错405 not allow，看来无法使用caidao连接。</p>
 <p>这道题的关键是要知道php的另外一种标准标签的形式，否则无法绕过开始对&lt;?的绕过。</p>
-<h2 id="YeserCMS"><a href="#YeserCMS" class="headerlink" title="YeserCMS"></a>YeserCMS</h2><p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/f1ba0114e441d777824bc0c17c368f35.png" alt=""></p>
+<h2 id="YeserCMS"><a href="#YeserCMS" class="headerlink" title="YeserCMS"></a>YeserCMS</h2><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/f1ba0114e441d777824bc0c17c368f35.png" alt=""></p>
 <p>经搜索这个Yesercms并不存在，因此可能是某种cms的二次开发得到的，发现是cmseasy，于是从网上找到了许多关于这个cms的漏洞。</p>
 <p>最后在/celive/live/header.php目录下存在注入，直接post提交payload</p>
 <p><code>xajax=Postdata&amp;amp;xajaxargs[0]=&lt;q&gt;detail=xxxxxx%2527%252C%2528UpdateXML%25281%252CCONCAT%25280x5b%252Cmid%2528%2528SELECT%252f%252a%252a%252fGROUP_CONCAT%2528concat%2528username%252C%2527%257C%2527%252Cpassword%2529%2529%2520from%2520yesercms_user%2529%252C1%252C32%2529%252C0x5d%2529%252C1%2529%2529%252CNULL%252CNULL%252CNULL%252CNULL%252CNULL%252CNULL%2529--%2520&lt;/q&gt;</code></p>
 <p><span style="color: #ff0000;">获取密码的过程中，由于显示长度的限制，最多只能显示25位的md5值，这时候可以改变一下读取的起始位置，保证之后的内容能够正常读取获取到32位</span></p>
 <p>获得账号为admin    密码为Yeser231</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/2b9986df2e490c3bebbc0958cb617e32.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/2b9986df2e490c3bebbc0958cb617e32.png" alt=""></p>
 <p>进入后台</p>
 <p>在编辑模板处存在文件包含漏洞</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/ca2b6ff33d00f9263080313030315390.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/859d088a4999c107559155b90ace5ad1.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/ca2b6ff33d00f9263080313030315390.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/859d088a4999c107559155b90ace5ad1.png" alt=""></p>
 <p>抓包修改参数id为flag.php的路径../../flag.php成功获取flag的值</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/539fb29e4179e2a8e02719f332836608.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/539fb29e4179e2a8e02719f332836608.png" alt=""></p>
 
       
     </div>
@@ -324,7 +324,7 @@
         <p><span>本文标题:</span><a href="/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/">百度杯CTF--第一周 writeup</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 BlBana 的个人博客">BlBana</a></p>
         <p><span>发布时间:</span>2016年09月05日 - 17时53分</p>
-        <p><span>最后更新:</span>2018年09月15日 - 02时37分</p>
+        <p><span>最后更新:</span>2018年10月24日 - 19时57分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/" title="百度杯CTF--第一周 writeup">http://blbana.cc/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blbana.cc/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/　　作者: BlBana" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -332,7 +332,7 @@
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -364,7 +364,7 @@
     <strong class="toc-title">文章目录</strong>
     <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解题思路"><span class="toc-number">2.</span> <span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YeserCMS"><span class="toc-number">3.</span> <span class="toc-text">YeserCMS</span></a></li></ol>
 </div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -483,8 +483,8 @@
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -493,7 +493,7 @@
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>

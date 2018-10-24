@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>通过Tomcat获取Webshell | BlBana&#39;s Blog 一只Web汪 ~</title>
@@ -13,28 +13,28 @@
 <meta property="og:site_name" content="BlBana&#39;s Blog 一只Web汪 ~">
 <meta property="og:description" content="导语：在本地搭建了一个Tomcat服务器，尝试了一下利用，Tomcat manager中war包部署获取目标网站的Webshell。又了用了kali下的msf生成的war包进行shell的反弹。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/3e8f2a6f018d1f6e8e0761e7fcb294d5.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/8410b39b895e1f64f793dab52b3abb18.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/8cd44b58f6e1459bda2f058eb5fce39a.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/fc6939efdbb54c8329bffa60d8219229.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/fc4442058247d84ca6651ec95b7e28b5.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/1d4ac68b4dad0fffac493f4d23b4004f.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/44e1aff2b85382914efff0afd01e9da5.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/7ee69c14837f6797d2cd65bd5f21bfde.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/08d6ceb03bc62dc9cd8ef511fbc5c85c.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/fa1388f39e04939588f5e90f2f4a400b.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/a2c82a5dbeec74a8d0c7216e27a81f76.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/1bc3c2d803dae616c3174286c86a1645.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/40efd5c1a0393a47f7d1cafc799b43e1.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/b3d174c9f0d859a2ac5dfcbfa8e76f4a.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/274f2c3a69bde973f36b07fe2d9c0220.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/aca36875e32416e9cb20a2143fb0d5a0.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/6a63ae7fd022871fe3f271fdad47497c.png">
-<meta property="og:updated_time" content="2018-09-14T18:37:43.999Z">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/3e8f2a6f018d1f6e8e0761e7fcb294d5.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/8410b39b895e1f64f793dab52b3abb18.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/8cd44b58f6e1459bda2f058eb5fce39a.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/fc6939efdbb54c8329bffa60d8219229.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/fc4442058247d84ca6651ec95b7e28b5.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/1d4ac68b4dad0fffac493f4d23b4004f.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/44e1aff2b85382914efff0afd01e9da5.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/7ee69c14837f6797d2cd65bd5f21bfde.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/08d6ceb03bc62dc9cd8ef511fbc5c85c.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/fa1388f39e04939588f5e90f2f4a400b.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/a2c82a5dbeec74a8d0c7216e27a81f76.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/1bc3c2d803dae616c3174286c86a1645.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/40efd5c1a0393a47f7d1cafc799b43e1.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/b3d174c9f0d859a2ac5dfcbfa8e76f4a.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/274f2c3a69bde973f36b07fe2d9c0220.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/aca36875e32416e9cb20a2143fb0d5a0.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/6a63ae7fd022871fe3f271fdad47497c.png">
+<meta property="og:updated_time" content="2018-10-24T11:57:44.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过Tomcat获取Webshell">
 <meta name="twitter:description" content="导语：在本地搭建了一个Tomcat服务器，尝试了一下利用，Tomcat manager中war包部署获取目标网站的Webshell。又了用了kali下的msf生成的war包进行shell的反弹。">
-<meta name="twitter:image" content="http://www.blbana.cc/wp-content/uploads/2016/10/3e8f2a6f018d1f6e8e0761e7fcb294d5.png">
+<meta name="twitter:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/3e8f2a6f018d1f6e8e0761e7fcb294d5.png">
   
     <link rel="alternative" href="/atom.xml" title="BlBana&#39;s Blog 一只Web汪 ~" type="application/atom+xml">
   
@@ -53,7 +53,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           rootUrl: '/',
@@ -67,7 +67,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -236,7 +236,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/" class="article-date">
@@ -246,7 +246,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -284,37 +284,37 @@
 <p>利用包管理工具安装了JDK 6 ，在/etc/environment中配置环境变量：</p>
 <p>CLASSPATH=/usr/lib/jvm/java-6-openjdk-amd64/lib<br>JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64</p>
 <p>配置成功后，可以尝试使用java和javac命令确认是否配置好</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/3e8f2a6f018d1f6e8e0761e7fcb294d5.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/3e8f2a6f018d1f6e8e0761e7fcb294d5.png" alt=""></p>
 <p>JDK配置完成后，可以开始部署Tomcat服务器了。</p>
 <p><span style="font-size: small;">$sudo wget wget </span><a href="http://archive.apache.org/dist/tomcat/tomcat-5/v5.5.20/bin/apache-tomcat-5.5.20.tar.gz" target="_blank" rel="noopener"><span style="font-size: small;">http://archive.apache.org/dist/tomcat/tomcat-5/v5.5.20/bin/apache-tomcat-5.5.20.tar.gz</span></a></p>
 <p>执行命令获得Tomcat的压缩包，解压后，将文件移动到了/opt/目录下，进入到Tomcat/bin目录下，启动Tomcat：</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/8410b39b895e1f64f793dab52b3abb18.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/8410b39b895e1f64f793dab52b3abb18.png" alt=""></p>
 <p>出现这样的显示时，说明Tomcat启动成功。</p>
 <p>访问Tomcat根目录，<a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/8cd44b58f6e1459bda2f058eb5fce39a.png" alt=""></p>
-<h3 id="0x02-通过war包部署拿shell"><a href="#0x02-通过war包部署拿shell" class="headerlink" title="0x02.通过war包部署拿shell"></a>0x02.通过war包部署拿shell</h3><p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/fc6939efdbb54c8329bffa60d8219229.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/8cd44b58f6e1459bda2f058eb5fce39a.png" alt=""></p>
+<h3 id="0x02-通过war包部署拿shell"><a href="#0x02-通过war包部署拿shell" class="headerlink" title="0x02.通过war包部署拿shell"></a>0x02.通过war包部署拿shell</h3><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/fc6939efdbb54c8329bffa60d8219229.png" alt=""></p>
 <p>可以看到页面左上角的Tomcat Manager,点击进入的时候，会出现http基础认证。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/fc4442058247d84ca6651ec95b7e28b5.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/fc4442058247d84ca6651ec95b7e28b5.png" alt=""></p>
 <p>不知道账号密码时，可以在Tomcat根目录下的/conf/tomcat-users.xml。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/1d4ac68b4dad0fffac493f4d23b4004f.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/1d4ac68b4dad0fffac493f4d23b4004f.png" alt=""></p>
 <p>rolename表示用户/权限，username表示账号，password密码，roles指顶用户的权限，可以有多个权限必须逗号分隔。Http的基础认证，输入过一次账号密码就无法登出了，必须关闭浏览器或者清除浏览器缓存来退出。（ps:manager是管理员权限）</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/44e1aff2b85382914efff0afd01e9da5.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/44e1aff2b85382914efff0afd01e9da5.png" alt=""></p>
 <p>进入管理页面后，可以进行war包部署了，从网上找到一个带有大马的war包进行部署，部署成功后，可以直接进入</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/7ee69c14837f6797d2cd65bd5f21bfde.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/08d6ceb03bc62dc9cd8ef511fbc5c85c.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/7ee69c14837f6797d2cd65bd5f21bfde.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/08d6ceb03bc62dc9cd8ef511fbc5c85c.png" alt=""></p>
 <p>成功连接大马，尝试执行命令发现是root用户。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/fa1388f39e04939588f5e90f2f4a400b.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/fa1388f39e04939588f5e90f2f4a400b.png" alt=""></p>
 <p>这是因为之前我在启动Tomcat服务器的时候，使用的是root用户启动的，当换成普通用户启动的时候，权限自然编程普通权限。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/a2c82a5dbeec74a8d0c7216e27a81f76.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/1bc3c2d803dae616c3174286c86a1645.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/a2c82a5dbeec74a8d0c7216e27a81f76.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/1bc3c2d803dae616c3174286c86a1645.png" alt=""></p>
 <p>所以说我们在部署网站的时候，尽量使用低权限的用户进行部署，提高整个站点的安全性，否则网站被拿webshell后直接就是root权限，无需提权。</p>
 <p>这里还可以使用自己的一句话木马覆盖war包中自带的木马，但是不能通过普通的压缩软件来制作war包，虽然能够压缩，但是上传后无法正常部署。</p>
-<h3 id="0x03-利用msf反弹shell"><a href="#0x03-利用msf反弹shell" class="headerlink" title="0x03.利用msf反弹shell"></a>0x03.利用msf反弹shell</h3><p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/40efd5c1a0393a47f7d1cafc799b43e1.png" alt=""></p>
+<h3 id="0x03-利用msf反弹shell"><a href="#0x03-利用msf反弹shell" class="headerlink" title="0x03.利用msf反弹shell"></a>0x03.利用msf反弹shell</h3><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/40efd5c1a0393a47f7d1cafc799b43e1.png" alt=""></p>
 <p>先使用相应的模块生成一个含有shell的war包，填写好监听主机的IP和端口</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/b3d174c9f0d859a2ac5dfcbfa8e76f4a.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/b3d174c9f0d859a2ac5dfcbfa8e76f4a.png" alt=""></p>
 <p>然后启用监听模块，配置好IP和端口，执行等待shell反弹，将刚刚生成的war包像之前一样部署到Tomcat的根目录，然后访问部署的文件。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/274f2c3a69bde973f36b07fe2d9c0220.png" alt=""><img src="http://www.blbana.cc/wp-content/uploads/2016/10/aca36875e32416e9cb20a2143fb0d5a0.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/10/6a63ae7fd022871fe3f271fdad47497c.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/274f2c3a69bde973f36b07fe2d9c0220.png" alt=""><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/aca36875e32416e9cb20a2143fb0d5a0.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/10/6a63ae7fd022871fe3f271fdad47497c.png" alt=""></p>
 <p>成功反弹回shell</p>
 <h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>Tomcat利用这种方式反弹shell的关键是，war包的部署，我们可以通过关闭Tomcat manager功能，或者是降低登陆manager页面用户的权限等方法来防止漏洞的产生，还需要保管好manager的账户密码以防泄露，防止漏洞。</p>
 
@@ -328,7 +328,7 @@
         <p><span>本文标题:</span><a href="/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/">通过Tomcat获取Webshell</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 BlBana 的个人博客">BlBana</a></p>
         <p><span>发布时间:</span>2016年10月24日 - 23时14分</p>
-        <p><span>最后更新:</span>2018年09月15日 - 02时37分</p>
+        <p><span>最后更新:</span>2018年10月24日 - 19时57分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/" title="通过Tomcat获取Webshell">http://blbana.cc/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blbana.cc/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/　　作者: BlBana" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -336,7 +336,7 @@
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -368,7 +368,7 @@
     <strong class="toc-title">文章目录</strong>
     <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#导语："><span class="toc-number">1.</span> <span class="toc-text">导语：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正文："><span class="toc-number">2.</span> <span class="toc-text">正文：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-Tomcat环境部署"><span class="toc-number">2.1.</span> <span class="toc-text">0x01.Tomcat环境部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-通过war包部署拿shell"><span class="toc-number">2.2.</span> <span class="toc-text">0x02.通过war包部署拿shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-利用msf反弹shell"><span class="toc-number">2.3.</span> <span class="toc-text">0x03.利用msf反弹shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结："><span class="toc-number">3.</span> <span class="toc-text">总结：</span></a></li></ol>
 </div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -487,8 +487,8 @@
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -497,7 +497,7 @@
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>

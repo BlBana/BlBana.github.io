@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
   <title>PHP反序列化漏洞复现 | BlBana&#39;s Blog 一只Web汪 ~</title>
@@ -13,20 +13,20 @@
 <meta property="og:site_name" content="BlBana&#39;s Blog 一只Web汪 ~">
 <meta property="og:description" content="导语之前做华山杯的一道题里，在读取一个文件内容的时候，由于无法直接读取，看writeup里采用改了php反序列化的方式去读取了对应的文件，当时看有点懵逼，就去补了补PHP反序列化漏洞的原理和利用。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/00be3624e76e59c180034a9b97d6bc21.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/b45134209b152bb6b391675af4f0d156.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/6b7d6e308f929c8475228629bbaaac84.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/f92c2a37b60c3e1f6ddea06a651d126d.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/5603752e0c398cd84d258cb7d40d42dd.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/e26f3d61a7b5fb173797e0dd53a95417.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/4ae2cf91bd4b5c53eeef6d3a6d242888.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/aa2090e05aa0c0067950b7d0acf375dd.png">
-<meta property="og:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/2747968806edf2c8fcc7e32d09b68783.png">
-<meta property="og:updated_time" content="2018-09-14T18:37:43.999Z">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/00be3624e76e59c180034a9b97d6bc21.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/b45134209b152bb6b391675af4f0d156.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/6b7d6e308f929c8475228629bbaaac84.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/f92c2a37b60c3e1f6ddea06a651d126d.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/5603752e0c398cd84d258cb7d40d42dd.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/e26f3d61a7b5fb173797e0dd53a95417.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/4ae2cf91bd4b5c53eeef6d3a6d242888.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/aa2090e05aa0c0067950b7d0acf375dd.png">
+<meta property="og:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/2747968806edf2c8fcc7e32d09b68783.png">
+<meta property="og:updated_time" content="2018-10-24T11:57:44.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PHP反序列化漏洞复现">
 <meta name="twitter:description" content="导语之前做华山杯的一道题里，在读取一个文件内容的时候，由于无法直接读取，看writeup里采用改了php反序列化的方式去读取了对应的文件，当时看有点懵逼，就去补了补PHP反序列化漏洞的原理和利用。">
-<meta name="twitter:image" content="http://www.blbana.cc/wp-content/uploads/2016/09/00be3624e76e59c180034a9b97d6bc21.png">
+<meta name="twitter:image" content="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/00be3624e76e59c180034a9b97d6bc21.png">
   
     <link rel="alternative" href="/atom.xml" title="BlBana&#39;s Blog 一只Web汪 ~" type="application/atom+xml">
   
@@ -45,7 +45,7 @@
   
   <!-- 加载特效 -->
     <script src="/js/pace.js"></script>
-    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet" />
+    <link href="/css/pace/pace-theme-flash.css" rel="stylesheet">
   <script>
       var yiliaConfig = {
           rootUrl: '/',
@@ -59,7 +59,7 @@
           open_in_new: false
       }
   </script>
-</head>
+</head></html>
 <body>
   <div id="container">
     <div class="left-col">
@@ -228,7 +228,7 @@
         </header>                
     </div>
 </nav>
-      <div class="body-wrap"><article id="post-php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0" class="article article-type-post" itemscope="" itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/" class="article-date">
@@ -238,7 +238,7 @@
   
   <div class="article-inner">
     
-      <input type="hidden" class="isFancy" />
+      <input type="hidden" class="isFancy">
     
     
       <header class="article-header">
@@ -271,7 +271,7 @@
       
           
         <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>之前做华山杯的一道题里，在读取一个文件内容的时候，由于无法直接读取，看writeup里采用改了php反序列化的方式去读取了对应的文件，当时看有点懵逼，就去补了补PHP反序列化漏洞的原理和利用。<br><a id="more"></a></p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="漏洞代码："><a href="#漏洞代码：" class="headerlink" title="漏洞代码："></a>漏洞代码：</h3><p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/00be3624e76e59c180034a9b97d6bc21.png" alt=""></p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="漏洞代码："><a href="#漏洞代码：" class="headerlink" title="漏洞代码："></a>漏洞代码：</h3><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/00be3624e76e59c180034a9b97d6bc21.png" alt=""></p>
 <h3 id="漏洞利用条件："><a href="#漏洞利用条件：" class="headerlink" title="漏洞利用条件："></a>漏洞利用条件：</h3><p>1.程序中必须有一个PHP的魔术方法，比如_wakeup或者_destruct，我们需要利用这个方法，来进行攻击；</p>
 <p>2.程序中含有PHP反序列化的函数unserialize()</p>
 <p>3.exp需要能够保存在服务器中，如果目标服务器开启了allow_url_fopen，我们可以利用file_get_contents函数远程读取文件。</p>
@@ -279,23 +279,23 @@
 <h3 id="exp内容："><a href="#exp内容：" class="headerlink" title="exp内容："></a>exp内容：</h3><p>O:3:”foo”:2:{s:4:”file”;s:9:”shell.php”;s:4:”data”;s:4:”aaaa”;}</p>
 <p>我们成功执行exp时，会在同一个目录下生成一个名叫shell.php的文件，并且文件内容为aaaa.</p>
 <h3 id="漏洞利用："><a href="#漏洞利用：" class="headerlink" title="漏洞利用："></a>漏洞利用：</h3><p>我们先通过上传之类的方法，将这个exp.txt上传到服务器当中，通过代码我们可以看出来，最后程序会将文件中的内容通过file_get_contents()函数读取出来，在程序执行完毕的时候，由于_destruct方法触发了代码执行。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/b45134209b152bb6b391675af4f0d156.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/6b7d6e308f929c8475228629bbaaac84.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/b45134209b152bb6b391675af4f0d156.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/6b7d6e308f929c8475228629bbaaac84.png" alt=""></p>
 <p>在同级目录下生成了一个shell.php，且内容为aaaa</p>
 <h3 id="漏洞分析："><a href="#漏洞分析：" class="headerlink" title="漏洞分析："></a>漏洞分析：</h3><p>出现这个漏洞的时候我们可以利用它向目标服务器上写入shell：</p>
 <p>O:3:”foo”:2:{s:4:”file”;s:9:”shell.php”;s:4:”data”;s:4:”&lt;?php @eval($_GET[‘BlBana’])?&gt;”;}</p>
 <p>通过这个exp，我们在shell.php写入的便是一句话。</p>
 <p>需要注意的是，在字符串中，前面的数字代表的是后面字符串中字符的个数，如果数字与字符个数不匹配的话，就会报错，并向shell.php中写入初始内容“text”，我在不同版本的PHP中测试了这种错误。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/f92c2a37b60c3e1f6ddea06a651d126d.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/5603752e0c398cd84d258cb7d40d42dd.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/f92c2a37b60c3e1f6ddea06a651d126d.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/5603752e0c398cd84d258cb7d40d42dd.png" alt=""></p>
 <p>在以上这两个版本中测试的时候，若我们序列化后的字符串不符合要求，就会抛出一个错误，并向shell.php中写入初始值。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/e26f3d61a7b5fb173797e0dd53a95417.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/4ae2cf91bd4b5c53eeef6d3a6d242888.png" alt=""></p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/aa2090e05aa0c0067950b7d0acf375dd.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/e26f3d61a7b5fb173797e0dd53a95417.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/4ae2cf91bd4b5c53eeef6d3a6d242888.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/aa2090e05aa0c0067950b7d0acf375dd.png" alt=""></p>
 <p>但是在这个版本的PHP中，不会报错，但是依然是在shell.php中写入初始值。所以在利用的时候需要注意以上的内容。</p>
 <hr>
 <p>现在分析一下漏洞的一些细节，这是因为我们通过GET传递了参数给session_filename这个参数中，导致之后的函数file_get_contents读取了exp.txt中的字符串，之后字符串被反序列化为了foo的数组对象，导致了代码执行。</p>
-<p><img src="http://www.blbana.cc/wp-content/uploads/2016/09/2747968806edf2c8fcc7e32d09b68783.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/2747968806edf2c8fcc7e32d09b68783.png" alt=""></p>
 <p>被反序列后产生的数组对象，相当于我们利用new foo（）生成了一个对象，但是，对象中的内容是以数组的形式存放的。</p>
 <p>foo Object ( [file] =&gt; 2.txt [data] =&gt; text )</p>
 <p>这是一个正常的数组对象，我们反序列后的字符串是</p>
@@ -323,7 +323,7 @@
         <p><span>本文标题:</span><a href="/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/">PHP反序列化漏洞复现</a></p>
         <p><span>文章作者:</span><a href="/" title="访问 BlBana 的个人博客">BlBana</a></p>
         <p><span>发布时间:</span>2016年09月16日 - 16时12分</p>
-        <p><span>最后更新:</span>2018年09月15日 - 02时37分</p>
+        <p><span>最后更新:</span>2018年10月24日 - 19时57分</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/" title="PHP反序列化漏洞复现">http://blbana.cc/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/</a>
             <span class="copy-path" data-clipboard-text="原文: http://blbana.cc/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/　　作者: BlBana" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -331,7 +331,7 @@
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target = "_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" title="中国大陆 (CC BY-NC-SA 3.0 CN)" target="_blank">"署名-非商用-相同方式共享 3.0"</a> 转载请保留原文链接及作者。
         </p>
     </div>
 
@@ -363,7 +363,7 @@
     <strong class="toc-title">文章目录</strong>
     <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#导语"><span class="toc-number">1.</span> <span class="toc-text">导语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正文"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞代码："><span class="toc-number">2.1.</span> <span class="toc-text">漏洞代码：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞利用条件："><span class="toc-number">2.2.</span> <span class="toc-text">漏洞利用条件：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exp内容："><span class="toc-number">2.3.</span> <span class="toc-text">exp内容：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞利用："><span class="toc-number">2.4.</span> <span class="toc-text">漏洞利用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#漏洞分析："><span class="toc-number">2.5.</span> <span class="toc-text">漏洞分析：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
 </div>
-<input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+<input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
 
 <script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
 <script>
@@ -482,8 +482,8 @@
         
             <div class="visit">
                 
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >海贼到访数: 
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit">海贼到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -492,7 +492,7 @@
                     <span>, </span>
                 
                 
-                    <span id="busuanzi_container_page_pv" style='display:none'>
+                    <span id="busuanzi_container_page_pv" style="display:none">
                         <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>
