@@ -4,13 +4,13 @@ avatar: /avatar/Misaka.jpg
 # author name
 author: BlBana
 # signature
-signature: 
+signature: Always on the way
 # SNS (you can custom the order)
 social:
-  email: 12345@qq.com
-  github: //github.com/fi3ework
+  email: blbana@qq.com
+  github: //github.com/blbana
   # wechat and qq should be a path of qr-code image
-  wechat: /assets/example_qr.png
+  # wechat: /assets/example_qr.png
   qq: 
   telegram: 
   weibo: 
