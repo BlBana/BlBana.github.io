@@ -31,8 +31,6 @@ social:
 # friends
 friends:
   friendA: //www.baidu.com
-  friendB: //www.google.com
-  friendC: 
 about:
   enable: true
   image: '/intro/about-bg.jpg'
