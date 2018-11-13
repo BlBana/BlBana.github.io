@@ -14,6 +14,8 @@ before_install:
 install:
     - npm install # 安装hexo及插件
     - npm install hexo --save
+    - npm i hexo-generator-json-content --save
+    - npm i --save hexo-wordcount
 script:
     - hexo clean # 清除
     - hexo g # 生成
