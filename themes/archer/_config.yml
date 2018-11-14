@@ -37,12 +37,12 @@ about:
 
 # ========== Site ========== #
 # title of the site (good for SEO)
-SEO_title: fi3ework's Studio
+SEO_title: BlBana's BlackHouse
 # keywords for site (good for SEO)
 SEO_keywords:
   - hexo
-  - 'hexo-theme'
-  - 'hexo-blog'
+  - 'BlBana'
+  - '香蕉'
 # main title shown in header image
 main_title: BlBana's BlackHouse.
 # subtitle

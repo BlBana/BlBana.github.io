@@ -26,7 +26,7 @@ permalink:
 
 ### Mac安装
 1. `brew install mysql-connector-c`解决MySQL库的软连接问题，用于mysqlclient import libmysqlclient库
-2. `brew install mysqlclient`安装mysqlclient库，用于Python连接MySQL
+2. `pip install mysqlclient`安装mysqlclient库，用于Python连接MySQL
 3. 安装`MySQL`，MySQL版本影响libmysqlclinent版本，mysqlclient版本依赖libmysqlclient版本
 
 > Django依赖mysqlclient库连接MySQL
