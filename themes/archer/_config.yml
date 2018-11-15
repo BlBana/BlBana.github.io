@@ -11,7 +11,7 @@ social:
   github: //github.com/blbana
   # wechat and qq should be a path of qr-code image
   # wechat: /assets/example_qr.png
-  qq: 
+  qq: /assets/qq.png
   telegram: 
   weibo: 
   zhihu: 
@@ -30,7 +30,7 @@ social:
   rss: 
 # friends
 friends:
-  friendA: //www.baidu.com
+  JawnHa: //jawn-ha.github.io/
 about:
   enable: true
   image: '/intro/about-bg.jpg'
@@ -46,7 +46,7 @@ SEO_keywords:
 # main title shown in header image
 main_title: BlBana's BlackHouse.
 # subtitle
-subtitle: it's better to burn out than to fade away
+subtitle: Dare to Think, Dare to Do, Dare to Fail
 # site haeder image
 site_header_image: '/intro/index-bg.jpg'
 # post haeder image
@@ -90,9 +90,9 @@ busuanzi: true
 # fill in pv or uv
 busuanzi_pv_or_uv: 'pv'
 # custom analytic slogan, '${count}' is the analytic number, DO NOT modify it.
-busuanzi_slug: 'PV: ${count} :)'
+busuanzi_slug: '悄悄到访者: ${count} :)'
 # Baidu analytics
-baidu_analytics: 
+baidu_analytics: 0a6173853f4e8c2b24ee8d32f841757a
 # Google analytics
 google_analytics: 
 # CNZZ analytics
