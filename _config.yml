@@ -91,3 +91,9 @@ jsonContent:
     excerpt: false
     categories: true
     tags: true
+
+algolia:
+  applicationID: 'E622EWD38Z'
+  apiKey: '533878226d50d14c545c8e95a3379de2'
+  indexName: 'Blog comment'
+  chunkSize: 5000

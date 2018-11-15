@@ -16,6 +16,7 @@ install:
     - npm install hexo --save
     - npm i hexo-generator-json-content --save
     - npm i --save hexo-wordcount
+    - npm install --save hexo-algolia
 script:
     - hexo clean # 清除
     - hexo g # 生成
