@@ -10,11 +10,11 @@ social:
   email: blbana@qq.com
   github: //github.com/blbana
   # wechat and qq should be a path of qr-code image
-  # wechat: /assets/example_qr.png
+  wechat: /assets/wechat.png
   qq: /assets/qq.png
   telegram: 
   weibo: 
-  zhihu: 
+  zhihu: //www.zhihu.com/people/zhu-rong-ji-15/activities
   douban: 
   facebook: 
   twitter: 
@@ -61,8 +61,8 @@ algolia_search:
     per_page: 10
   labels:
     input_placeholder: Search for Posts
-    hits_empty: "We did not find any results for the search: ${query}"
-    hits_stats: "${hits} results found in ${time} ms"
+    hits_empty: "大兄弟?别瞎搜啊，你看你搜的是个啥--> ${query}"
+    hits_stats: "${hits} results found in ${time} ms, 这速度老板你看得劲不:)"
 
 # ========== Comment ========== #
 # Fill in the field to enable the corresponding comment plugin
