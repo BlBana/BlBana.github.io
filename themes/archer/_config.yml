@@ -80,9 +80,9 @@ comment:
   # Youyan  site: http://www.uyan.cc/
   youyan_uid: 
   # Valine  site: https://valine.js.org/
-  valine_appId: 
-  valine_appKey: 
-  valine_placeHolder: 
+  valine_appId: tEqAwsQl0o2KjbyKrV8L6CPd-gzGzoHsz
+  valine_appKey: VlcSAqNhdr8z6ccGghmmPyVH
+  valine_placeHolder: Just Go Go
 
 # ========== Analytics ========== #
 # enable Busuanzi analytics
