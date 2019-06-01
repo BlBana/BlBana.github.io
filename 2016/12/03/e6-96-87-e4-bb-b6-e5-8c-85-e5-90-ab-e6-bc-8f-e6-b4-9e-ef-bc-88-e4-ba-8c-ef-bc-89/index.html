@@ -191,8 +191,8 @@
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script">
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script">
     <link rel="preload" href="/scripts/main.js" as="script">
-    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin="">
-    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin="">
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
     
         <!-- algolia -->
         <script>
@@ -437,7 +437,7 @@ height:50vh;
 <h3 id="0x03-利用phar"><a href="#0x03-利用phar" class="headerlink" title="0x03 利用phar"></a>0x03 利用phar</h3><p>利用phar文件的方法很简单，利用phar特定的格式就可以加以利用</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">'phar://shell.phar/shell.php'</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 <p>这样就可以成功把shell包含进来。当我们把shell.phar文件重命名为shell.aaa等一些无效的后缀名时，一样可以使用，说明了phar文件不受文件格式的影响。</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/5e01b381ad62e11dd74805a4177bc152.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/5e01b381ad62e11dd74805a4177bc152.png" alt></p>
 <h3 id="0x04-思路"><a href="#0x04-思路" class="headerlink" title="0x04 思路"></a>0x04 思路</h3><p>有了phar文件，我们就能有一些猥琐的思路了，比如上传的文件名遭到了限制，我们无法上传php的文件，但是却只能包含php文件的时候（包含文件后缀名被限制 include ‘$file’.’.php’），我们就可以通过上传phar文件，再利用php伪协议来包含。</p>
 <h3 id="0x05-扩展"><a href="#0x05-扩展" class="headerlink" title="0x05 扩展"></a>0x05 扩展</h3><p>与phar类似的还有，zip://协议也与phar类似，但是上传了包含有一句话的zip文件后包含的姿势有所不同</p>
 <p>include ‘zip://shell.zip#shell.php’ 利用#隔开，在URL中包含时要用%23，与URL中#号区分开。</p>
@@ -457,11 +457,11 @@ height:50vh;
 $data = file_get_contents(&#39;php://input&#39;);
 echo $data;
 ?&gt;</code></p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/d1660fedd8e4cfacdc61fbb3d39e1792.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/d1660fedd8e4cfacdc61fbb3d39e1792.png" alt></p>
 <p>(注意：需要allow_url_include = On 且 PHP &gt;= 5.2.0)</p>
 <h3 id="0x06-data-URL代码执行"><a href="#0x06-data-URL代码执行" class="headerlink" title="0x06 data URL代码执行"></a>0x06 data URL代码执行</h3><p>我们可以将攻击代码转换为data:URL形式进行攻击，但是直接在URL连接中出现一些敏感字符，会导致被waf检测，所以我们需要给攻击代码进行base64编码。</p>
 <p><a href="http://localhost/test/phar%20LFI/postinput.php?file=data:text/plain;base64,PD9waHAKcGhwaW5mbygpOwo/Pg==" target="_blank" rel="noopener">http://localhost/test/phar%20LFI/postinput.php?file=data:text/plain;base64,PD9waHAKcGhwaW5mbygpOwo/Pg==</a></p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/90d47eb1cb5e3f380948909548dee61d.png" alt=""></p>
+<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/12/90d47eb1cb5e3f380948909548dee61d.png" alt></p>
 <p>## </p>
 <p>文件包含的利用姿势很多，一个文件包含可能直接导致getshell或者被利用成了代码执行漏洞，后果十分验证，所以在使用这些文件包含函数的时候，一定要对包含进来的文件进行过滤处理，避免漏洞的产生。</p>
 <h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><p><a href="https://digi.ninja/blog/when_all_you_can_do_is_read.php" target="_blank" rel="noopener">https://digi.ninja/blog/when_all_you_can_do_is_read.php</a> 常用包含路径</p>
@@ -475,7 +475,7 @@ echo $data;
             <p>原文作者：<a href="http://blbana.cc">BlBana</a>
             </p><p>原文链接：<a href="http://blbana.cc/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/">http://blbana.cc/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/</a>
             </p><p>发表日期：<a href="http://blbana.cc/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/">December 3rd 2016, 4:28:53 pm</a>
-            </p><p>更新日期：<a href="http://blbana.cc/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/">January 21st 2019, 6:33:36 pm</a>
+            </p><p>更新日期：<a href="http://blbana.cc/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/">June 1st 2019, 10:14:36 pm</a>
             </p><p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
