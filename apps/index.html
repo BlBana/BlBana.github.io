@@ -22,7 +22,7 @@
     <meta name="description" content="Web安全 | 代码审计 | PHP | Python ...">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>百度杯CTF--第一周 writeup · BlBana&#39;s BlackHouse</title>
+    <title>APP推荐 · BlBana&#39;s BlackHouse</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -228,7 +228,7 @@
 </head>
 
     
-        <body class="post-body">
+        <body class="about-body">
     
     
 <header class="header">
@@ -236,15 +236,6 @@
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
-    
-    <div class="banner">
-            <div class="blog-title">
-                <a href="/" >BlBana&#39;s BlackHouse.</a>
-            </div>
-            <div class="post-title">
-                <a href="#" class="post-name">百度杯CTF--第一周 writeup</a>
-            </div>
-    </div>
     
     <a class="home-link" href=/>BlBana's BlackHouse.</a>
 </header>
@@ -263,73 +254,23 @@ height:50vh;
     <!-- 主页  -->
     
     
-    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/about-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            百度杯CTF--第一周 writeup
-            <!-- 404 -->
+            APP推荐
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
-            
-            <!-- 404 -->
-            
         </p>
         <!-- 文章页meta -->
-        
-            <div class="post-intros">
-                <!-- 文章页标签  -->
-                
-                    <div class= post-intro-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "上传漏洞">上传漏洞</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "PHP">PHP</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "上传绕过方法">上传绕过方法</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "绕过过滤">绕过过滤</a>
-    
-</div>
-                
-                
-                    <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">709</span>阅读时长: <span class="post-count reading-time">2 min</span></span>
-                    </div>
-                
-                <div class="post-intro-meta">
-                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                    <span class="post-intro-time">2016/09/05</span>
-                    
-                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
-                        <span class="iconfont-archer">&#xe602;</span>
-                        <span id="busuanzi_value_page_pv"></span>
-                    </span>
-                    
-                    <span class="shareWrapper">
-                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
-                        <span class="shareText">Share</span>
-                        <ul class="shareList">
-                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
-                                <div class="share-qrcode"></div>
-                            </li>
-                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
-                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
-                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
-                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
-                        </ul>
-                    </span>
-                </div>
-            </div>
         
     </div>
 </div>
@@ -430,107 +371,11 @@ height:50vh;
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main post-page">
+            <!-- 不可以删除，否则会调用post的layout  -->
+<main class="main about-page">
     <article class="article-entry">
-        <h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/7cc41055b2df1a9b480183913b32809e.png" alt></p>
-<p>这道题开始给的提示是flag.php中有flag，因此我们的目的就是读这个flag.php。<br><a id="more"></a></p>
-<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/d62522878aeaa5918594e519fac98dbe.png" alt></p>
-<p>进来后发现是一个上传界面，我们先尝试上传一些正常文件</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/e18719d581bf9f4d9f59413dcc0b6b00.png" alt></p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/1264b5c02738f094a5af03db9d3a4fda.png" alt></p>
-<p>是可以正常上传的，现在我们尝试上传一个.php的文件</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/d4b844ae06eb0072237b29a27a769747.png" alt></p>
-<p>上传后，发现我们代码里的&lt;?php被过滤了，导致代码无法正常解析，被当作字符串输出了。</p>
-<p>经过测试发现被过滤的是&lt;?和php，并且无法动态拼接绕过，但是php只是过滤了小写，大写字母并没有做出任何处理，我们可以通过大小写绕过php的过滤，&lt;?无论怎么拼接，都会被循环过滤掉，因此需要换一种思路。</p>
-<p>经过查询发现，php的标准标签其实有两种：</p>
-<p>1.&lt;?php                                            ?&gt;                    这里&lt;?会被过滤行不通；</p>
-<p>2.&lt;script language=php&gt; &lt;/script&gt;            这里不存在&lt;?，我们不怕php无法被解析了</p>
-<hr>
-<p>现在我们需要构造一个没有php和&lt;?的脚本去上传</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/c244d520c389e470226ab10cee68f025.png" alt></p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/fcb6e581b440477aab8261b34a7e0f8f.png" alt></p>
-<p>OK，我们代码正常运行了。现在可以去尝试读取flag.php的文件了。</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/4ec5288d2dd719bc67f7d4f629118883.png" alt></p>
-<p>由于提示上说，flag在flag.php中，php需要为小写，否则无法读到正确的文件，但是我们代码里要是存在php的话就会被过滤掉，因此利用url编码，绕过开始对php的过滤。</p>
-<p>成功读到文件</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/ddfaea289d90dd31b0c6e57edb28963c.png" alt></p>
-<hr>
-<p>当我们上传一句话的时候，就会被拦截，这时可以利用burp抓包进行截断绕过上传，成功上传含有一句话的脚本，尝试使用caidao连接，报错405 not allow，看来无法使用caidao连接。</p>
-<p>这道题的关键是要知道php的另外一种标准标签的形式，否则无法绕过开始对&lt;?的绕过。</p>
-<h2 id="YeserCMS"><a href="#YeserCMS" class="headerlink" title="YeserCMS"></a>YeserCMS</h2><p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/f1ba0114e441d777824bc0c17c368f35.png" alt></p>
-<p>经搜索这个Yesercms并不存在，因此可能是某种cms的二次开发得到的，发现是cmseasy，于是从网上找到了许多关于这个cms的漏洞。</p>
-<p>最后在/celive/live/header.php目录下存在注入，直接post提交payload</p>
-<p><code>xajax=Postdata&amp;amp;xajaxargs[0]=&lt;q&gt;detail=xxxxxx%2527%252C%2528UpdateXML%25281%252CCONCAT%25280x5b%252Cmid%2528%2528SELECT%252f%252a%252a%252fGROUP_CONCAT%2528concat%2528username%252C%2527%257C%2527%252Cpassword%2529%2529%2520from%2520yesercms_user%2529%252C1%252C32%2529%252C0x5d%2529%252C1%2529%2529%252CNULL%252CNULL%252CNULL%252CNULL%252CNULL%252CNULL%2529--%2520&lt;/q&gt;</code></p>
-<p><span style="color: #ff0000;">获取密码的过程中，由于显示长度的限制，最多只能显示25位的md5值，这时候可以改变一下读取的起始位置，保证之后的内容能够正常读取获取到32位</span></p>
-<p>获得账号为admin    密码为Yeser231</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/2b9986df2e490c3bebbc0958cb617e32.png" alt></p>
-<p>进入后台</p>
-<p>在编辑模板处存在文件包含漏洞</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/ca2b6ff33d00f9263080313030315390.png" alt></p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/859d088a4999c107559155b90ace5ad1.png" alt></p>
-<p>抓包修改参数id为flag.php的路径../../flag.php成功获取flag的值</p>
-<p><img src="http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/2016/09/539fb29e4179e2a8e02719f332836608.png" alt></p>
-
+        
     </article>
-    <!-- license  -->
-    
-        <div class="license-wrapper">
-            <p>原文作者：<a href="http://blbana.cc">BlBana</a>
-            <p>原文链接：<a href="http://blbana.cc/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/">http://blbana.cc/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/</a>
-            <p>发表日期：<a href="http://blbana.cc/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/">September 5th 2016, 5:53:33 pm</a>
-            <p>更新日期：<a href="http://blbana.cc/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/">September 16th 2019, 6:50:39 pm</a>
-            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
-        </div>
-    
-    <!-- paginator  -->
-    <ul class="post-paginator">
-        <li class="next">
-            
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/" title= "PHP反序列化漏洞复现">
-                    <div class="nextTitle">PHP反序列化漏洞复现</div>
-                </a>
-            
-        </li>
-        <li class="previous">
-            
-                <div class="prevSlogan">Previous Post</div>
-                <a href= "/2016/08/12/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e/" title= "文件包含漏洞">
-                    <div class="prevTitle">文件包含漏洞</div>
-                </a>
-            
-        </li>
-    </ul>
-    <!-- 评论插件 -->
-    <!-- 来必力City版安装代码 -->
-
-<!-- City版安装代码已完成 -->
-    
-    
-    <!-- partial('_partial/comment/changyan') -->
-    <!--PC版-->
-
-
-    
-    
-    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
-    <div id="comment"></div>
-    <script>
-    new Valine({
-        el: '#comment' ,
-        notify:false, 
-        verify:false, 
-        appId: "tEqAwsQl0o2KjbyKrV8L6CPd-gzGzoHsz",
-        appKey: "VlcSAqNhdr8z6ccGghmmPyVH",
-        placeholder: "Just Go Go",
-        path:window.location.pathname, 
-        avatar:'mm' 
-    });
-    </script>
-
-
-    <!-- 评论 -->
 </main>
             <!-- profile -->
             
@@ -626,24 +471,6 @@ height:50vh;
 </footer>
     </div>
     <!-- toc -->
-    
-    <div class="toc-wrapper" style=
-    
-
-
-
-
-
-
-
-top:50vh;
-
-    >
-        <div class="toc-catalog">
-            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
-        </div>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解题思路"><span class="toc-number">2.</span> <span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YeserCMS"><span class="toc-number">3.</span> <span class="toc-text">YeserCMS</span></a></li></ol>
-    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -1428,8 +1255,6 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
-    
-        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>
