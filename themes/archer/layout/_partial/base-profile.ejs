@@ -23,6 +23,16 @@
             <% } %>
         </div>
     <% } %>
+    <% if(theme.thought.enable) { %>
+        <div class="about-me">
+            <a href = "<%- url_for("/thought") %>" >饱思Yin欲</a>
+        </div>
+    <% } %>
+    <% if(theme.apps.enable) { %>
+        <div class="about-me">
+            <a href = "<%- url_for("/apps") %>" >APP推荐</a>
+        </div>
+    <% } %>
     <% if(theme.about.enable) { %>
         <div class="about-me">
             <a href = "<%- url_for("/about") %>" >ABOUT ME</a>

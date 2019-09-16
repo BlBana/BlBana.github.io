@@ -28,6 +28,7 @@ social:
   steam: 
   others: 
   rss: 
+# meus 菜单设置
 # friends
 friends:
   JawnHa: //jawn-ha.github.io/
@@ -35,6 +36,10 @@ friends:
 about:
   enable: true
   image: '/intro/about-bg.jpg'
+thought:
+  enable: true
+apps:
+  enable: true
 
 # ========== Site ========== #
 # title of the site (good for SEO)
