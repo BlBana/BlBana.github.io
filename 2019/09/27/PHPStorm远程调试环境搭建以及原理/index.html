@@ -22,7 +22,7 @@
     <meta name="description" content="Web安全 | 代码审计 | PHP | Python ...">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>BlBana&#39;s BlackHouse</title>
+    <title>PHPStorm远程调试环境搭建以及原理 · BlBana&#39;s BlackHouse</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -228,12 +228,23 @@
 </head>
 
     
+        <body class="post-body">
+    
     
 <header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >BlBana&#39;s BlackHouse.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">PHPStorm远程调试环境搭建以及原理</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>BlBana's BlackHouse.</a>
 </header>
@@ -245,24 +256,76 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            PHPStorm远程调试环境搭建以及原理
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+            
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "代码审计">代码审计</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "PHP">PHP</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.9k</span>阅读时长: <span class="post-count reading-time">7 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/09/27</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -363,135 +426,213 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2017/05/20/SQLi-——-逗号，空格，字段名过滤突破/" >
-            
-                <span>SQLi —— 逗号，空格，字段名过滤突破</span>
-        </a>
-        <div class="abstract-content">
-            <h3 id="SQLi-——-逗号，空格，字段名过滤突破"><a href="#SQLi-——-逗号，空格，字段名过滤突破" class="headerlink" title="SQLi-——-逗号，空格，字段名过滤突破"></a>SQLi-——-逗号，空格，字段名过滤突破</h3><p>在做CTF的时候，遇到了一道SQL注入的题目，发现空格，逗号都被过滤掉了，空格被过滤有很多种方法可以绕过，但是逗号被过滤掉，最后在参考了V师傅的blog以后把题做了出来</p>
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2017/05/20</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SQL注入绕过">SQL注入绕过</a>
-    
-</div>
-            
-        </div>
+            <main class="main post-page">
+    <article class="article-entry">
+        <blockquote>
+<p>最近准备做一些PHP的漏洞分析，来拓展一下自己代码审计时的思路，俗话说“工欲善其事必先利其器”嘛，就把PHPStorm代码调试环境配置了一下，本地比较容易，主要还是记录一下在配置远程调试环境的一些要点，用于备忘，再简单介绍一下远程调试的原理。</p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<p>PHP大家一般会使用打印变量值这样的基础方法进行调试：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">echo</td>
+<td style="text-align:center">语言结构</td>
+<td style="text-align:center">打印简单类型变量（如int，string）</td>
+</tr>
+<tr>
+<td style="text-align:center">print</td>
+<td style="text-align:center">语言结构</td>
+<td style="text-align:center">打印简单类型变量（如int，string）</td>
+</tr>
+<tr>
+<td style="text-align:center">print_r</td>
+<td style="text-align:center">函数</td>
+<td style="text-align:center">打印出复杂类型变量的值(如数组、对象）以列表的形式显示</td>
+</tr>
+<tr>
+<td style="text-align:center">var_dump</td>
+<td style="text-align:center">函数</td>
+<td style="text-align:center">判断多个变量的类型和长度，并输出变量的数值</td>
+</tr>
+<tr>
+<td style="text-align:center">var_export</td>
+<td style="text-align:center">函数</td>
+<td style="text-align:center">var_dump() 类似，不同的是其返回的表示是合法的 PHP 代码</td>
+</tr>
+<tr>
+<td style="text-align:center">dump</td>
+<td style="text-align:center">函数</td>
+<td style="text-align:center">大部分框架自带的调试函数,用于var_dump()友好(格式化)的输出</td>
+</tr>
+</tbody>
+</table>
+<p>但打印的方式用来调试大型的项目就显得力不从心了，这时候可以选择使用PHPStorm进行断点调试，分析漏洞的数据流。PHP需要安装额外的扩展进行调试，主要有以下两种，本文主要讲Xdebug相关内容。</p>
+<ul>
+<li>Xdebug</li>
+<li>Zend Debugger</li>
+</ul>
+<h1 id="0x01-环境介绍"><a href="#0x01-环境介绍" class="headerlink" title="0x01 环境介绍"></a>0x01 环境介绍</h1><ul>
+<li>本地：macOS 10.14.5 + phpstrom 2019.2.1</li>
+<li>远程：Windows10 + phpstudy8</li>
+</ul>
+<h1 id="0x02-Server配置"><a href="#0x02-Server配置" class="headerlink" title="0x02 Server配置"></a>0x02 Server配置</h1><ol>
+<li><p>Server端使用phpstudy的集成环境，给<code>php</code>下载配置对应版本的<code>Xdebug</code>扩展，不知道版本的话可以使用<a href="https://xdebug.org/wizard" target="_blank" rel="noopener">Xdebug官方工具检测并提供下载链接</a>。</p>
+</li>
+<li><p>配置<code>php.ini</code>文件：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[xdebug]</span></span><br><span class="line"><span class="attr">zend_extension</span>=<span class="string">"E:\Develop-Env\XAMPP\php\ext\php_xdebug-2.7.2-7.3-vc15-x86_64.dll"</span></span><br><span class="line"><span class="attr">xdebug.idekey</span> = PHPSTORM  <span class="comment"># 必填，用于发起调试请求的Cookie</span></span><br><span class="line"><span class="attr">xdebug.remote_enable</span> = <span class="number">1</span>  <span class="comment"># 必填，开启远程调试</span></span><br><span class="line"><span class="attr">xdebug.remote_autostart</span> = <span class="number">0</span>  <span class="comment"># 选填，自动开启调试模式</span></span><br><span class="line"><span class="attr">xdebug.remote_connect_back</span> = <span class="number">1</span>  <span class="comment"># 选填，自动回联请求IP进行调试 （多人调试）</span></span><br><span class="line"><span class="attr">xdebug.remote_host</span> = <span class="number">127.0</span>.<span class="number">0.1</span>  <span class="comment"># 选填，监听调试机器IP，和上面这个参数选择开启一个 （单人调试）</span></span><br><span class="line"><span class="attr">xdebug.remote_port</span> = <span class="number">9000</span>  <span class="comment"># 必填，监听调试的IDE机器端口</span></span><br><span class="line"><span class="attr">xdebug.remote_handler</span> = dbgp  <span class="comment"># 必填，通信协议</span></span><br><span class="line"><span class="attr">xdebug.scream</span> = <span class="number">0</span></span><br><span class="line"><span class="attr">xdebug.show_local_vars</span> = <span class="number">1</span>  <span class="comment"># 后面这两个我复制的...</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置完后重启WebServer即可。</p>
+</li>
+</ol>
+<h1 id="0x03-本地IDE配置"><a href="#0x03-本地IDE配置" class="headerlink" title="0x03 本地IDE配置"></a>0x03 本地IDE配置</h1><h2 id="0x03-1-Debug配置"><a href="#0x03-1-Debug配置" class="headerlink" title="0x03-1 Debug配置"></a>0x03-1 Debug配置</h2><h3 id="0x03-1-1-DEBUG-Port"><a href="#0x03-1-1-DEBUG-Port" class="headerlink" title="0x03-1.1 DEBUG Port"></a>0x03-1.1 DEBUG Port</h3><p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_debug.png" alt></p>
+<p>配置要监听的端口，这里配置与上面php.ini文件配置保持一致为9000端口</p>
+<h3 id="0x03-1-2-DBGp-Proxy"><a href="#0x03-1-2-DBGp-Proxy" class="headerlink" title="0x03-1.2 DBGp Proxy"></a>0x03-1.2 DBGp Proxy</h3><p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/Xdebug_dbgp.png" alt></p>
+<ul>
+<li>Host为Server端IP地址</li>
+<li>Port为IDE监听的调试端口</li>
+<li>IDE Key为Server端php.ini中xdebug.idekey = PHPSTORM，<strong>用于之后启动调试的参数</strong></li>
+</ul>
+<h2 id="0x03-2-Servers配置"><a href="#0x03-2-Servers配置" class="headerlink" title="0x03-2 Servers配置"></a>0x03-2 Servers配置</h2><p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_server.png" alt></p>
+<ul>
+<li>Host为Server端IP地址</li>
+<li>Port为Server端Web服务端口</li>
+<li>Debugger为Server端debug扩展</li>
+</ul>
+<blockquote>
+<p>远程调试需要开启<code>user path mappings</code>，将远程环境项目与本地环境项目进行映射。</p>
+</blockquote>
+<ul>
+<li>File/Directory –》本地路径</li>
+<li>Absolute path the server –》 远程路径</li>
+</ul>
+<h1 id="0x04-调试"><a href="#0x04-调试" class="headerlink" title="0x04 调试"></a>0x04 调试</h1><blockquote>
+<p>完成上述配置以后就可以开始进行代码调试了，远程调试有两种不同的调试方法，分别是浏览器插件发起调试请求或者PHPStorm debug发起调试请求。</p>
+</blockquote>
+<h2 id="0x04-1-PHPStorm-debug发起调试请求"><a href="#0x04-1-PHPStorm-debug发起调试请求" class="headerlink" title="0x04-1 PHPStorm debug发起调试请求"></a>0x04-1 PHPStorm debug发起调试请求</h2><ol>
+<li><p>需要进行<code>Run/Debug configurations</code>配置，创建一个<code>PHP Web Page</code>的运行配置</p>
+<ul>
+<li>Server：选择3.2步骤中Server</li>
+<li>Start URL：配置要调试的页面路径</li>
+<li>Brower：浏览器</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_config_web.png" alt></p>
+</li>
+<li><p>准备就绪后，开启PHPStorm右上角的小电话，绿色时为开启9000端口的debug监听，点击小爬虫拉起浏览器开始调试代码。</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_config_web_start.png" alt></p>
+</li>
+<li><p>之后就可以打断点，正常进行调试了。</p>
+</li>
+</ol>
+<blockquote>
+<p>不过这样子调试还是有些麻烦的，每次需要配置<code>Start URL</code>参数来控制自己要调试的页面，PHPStorm通过加<code>XDEBUG_SESSION_START</code>参数发起GET请求，来开启调试，服务端Xdebug在接收到请求后，会与IDE的9000端口发起连接，开始调试。不过这样子配置还是有些麻烦，每次要么需要改动<code>Start URL</code>参数或者在自己想访问的页面URL后加上<code>XDEBUG_SESSION_START</code>参数来开启调试，安装浏览器插件就舒服多了 ~</p>
+</blockquote>
+<h2 id="0x04-2-浏览器插件发起调试"><a href="#0x04-2-浏览器插件发起调试" class="headerlink" title="0x04-2 浏览器插件发起调试"></a>0x04-2 浏览器插件发起调试</h2><ol>
+<li>安装浏览器插件<strong>Xdebug Helper</strong></li>
+<li>配置好插件的<strong>IDE Key为PHPSTORM</strong></li>
+<li>在PHPSTORM中<strong>开启小电话</strong>，并且在浏览器中<strong>开启插件的DEBUG模式</strong>，打好断点，直接开始访问想要调试的页面就能开启调试了</li>
+</ol>
+<blockquote>
+<p>其实调试原理都是一样的，通过插件的主要是在Cookie中放了一个<strong>XDEBUG_SESSION=PHPSTORM</strong>发起了开启调试的请求，这里也可以使用Postman之类的调试插件来发起请求，把<strong>XDEBUG_SESSION=PHPSTORM</strong>带上就OK</p>
+</blockquote>
+<h2 id="0x04-3-坑-！！"><a href="#0x04-3-坑-！！" class="headerlink" title="0x04-3 坑 ！！"></a>0x04-3 坑 ！！</h2><p>一定要保证远程环境和本地环境代码一致，否则调试过程会出现问题，我下的cms所有代码都在一行，本地代码用phpstorm格式化显示了，但远程代码还在一行里，我调试的时候本地一直显示在第一行，单步调试光标也不动，配置翻来覆去看都觉得没问题，最后才想起来我本地代码格式化过，远程还是在一行，mmp，折腾了一下午。。。</p>
+<p>有个比较好的办法就是开启PHPStorm的远程开发功能，配置好远程开发环境<strong>Deployment</strong>，每次修改完本地代码后PHPStorm可以自动同步远程和本地代码，还能进行远程和本地的代码对比，代码上传/下载等功能。具体配置可以看第六部分。</p>
+<h1 id="0x05-原理分析"><a href="#0x05-原理分析" class="headerlink" title="0x05 原理分析"></a>0x05 原理分析</h1><p>PHPStorm已经集成了遵循BGDP协议的Xdebug插件，当开启小电话的时候，会在本地开启一个Xdebug的调试服务，监听端口就是我们在上面配置的9000端口。</p>
+<p>当浏览器送一个带有<strong>XDEBUG_SESSION</strong>参数的请求到服务器时，服务器会将其交给后端PHP处理，当开启了Xdebug功能时，就会把debug信息通过9000端口发送到客户端的IDE上，从而完成调试功能。开启调试的关键就是<strong>XDEBUG_SESSION</strong>参数，可以通过增删这个参数来控制是否开启调试功能。</p>
+<blockquote>
+<p>有个要注意的点就是Xdebug的配置中有个参数<strong>xdebug.remote_autostart = 0</strong>，我看很多文章都配置为1，这个参数是指是否自动开启调试模式，当参数置为1时，不管你请求中是否带有<strong>XDEBUG_SESSION</strong>参数，都会进入调试模式，所以这里建议关掉。</p>
+</blockquote>
+<p>这里附上Xdebug官网的IDE和Xdebug之间调试关系图。</p>
+<ol>
+<li>图1为开启xdebug.remote_host参数的单人调试模式，只会给指定IP的请求开启调试</li>
+</ol>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_xdebug_only.png" alt></p>
+<ol start="2">
+<li>图2为开启xdebug.remote_connect_back参数的多人调试模式，会根据请求的IP信息进行回连</li>
+</ol>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_xdebug_multi.png" alt></p>
+<h1 id="0x06-远程开发"><a href="#0x06-远程开发" class="headerlink" title="0x06 远程开发"></a>0x06 远程开发</h1><blockquote>
+<p> 大概再介绍一下远程开发，有了这个功能，就能方便的在本地调试代码并实时修改代码并进行同步工作了。</p>
+</blockquote>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_remote_dev.png" alt></p>
+<ol>
+<li>如图在创建新项目时候选择加载已有的项目，并选择使用FTP来加载远程项目</li>
+<li>跟着步骤配置好本地路径和FTP服务器信息后就能开启远程开发模式了</li>
+</ol>
+<blockquote>
+<p>这项配置可以选择是否进行自动代码同步</p>
+</blockquote>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_remote_dev_config.png" alt></p>
+<p>右键点击想要同步的文件夹或者文件，点击Deployment就能选择上传/下载/对比/同步这几个功能，试了一下真的贼好用 ~ 舒服了 …</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/phpstorm-debug/xdebug_remote_dev_upload.png" alt></p>
+<h1 id="0x07-总结"><a href="#0x07-总结" class="headerlink" title="0x07 总结"></a>0x07 总结</h1><p>PHP调试环境配置起来还蛮麻烦的，不过跟着步骤一步步来配上一次就OK了，之后就是愉快的开始调试漏洞了 ~ 溜了溜了</p>
+<blockquote>
+<p>菜鸡打滚 ~</p>
+</blockquote>
+
     </article>
+    <!-- license  -->
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2016/12/05/Mysql宽字节注入/" >
-            
-                <span>Mysql宽字节注入</span>
-        </a>
-        <div class="abstract-content">
-            <blockquote>
-<p>现在大多数的网站对于SQL注入都做了一定的方法，例如使用一些Mysql中转义的函数addslashes，mysql_real_escape_string，mysql_escape_string等，还有一种是配置magic_quote_gpc，不过PHP高版本已经移除此功能。其实这些函数就是为了过滤用户输入的一些数据，对特殊的字符加上反斜杠“\”进行转义，这里讨论一下利用宽字节注入绕过这些函数。<br>
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://blbana.cc">BlBana</a>
+            <p>原文链接：<a href="http://blbana.cc/2019/09/27/PHPStorm远程调试环境搭建以及原理/">http://blbana.cc/2019/09/27/PHPStorm远程调试环境搭建以及原理/</a>
+            <p>发表日期：<a href="http://blbana.cc/2019/09/27/PHPStorm远程调试环境搭建以及原理/">September 27th 2019, 11:18:44 am</a>
+            <p>更新日期：<a href="http://blbana.cc/2019/09/27/PHPStorm远程调试环境搭建以及原理/">September 27th 2019, 4:17:53 pm</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2016/12/05</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SQL注入">SQL注入</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "宽字节注入">宽字节注入</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/" >
-            
-                <span>Mysql报错注入原理</span>
-        </a>
-        <div class="abstract-content">
-            <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>一直使用mysql的报错注入，但是不清楚它的原理是什么，为什么会出现报错，我们使用到了floor(),rand(),count(*)三个函数，每个函数起到了什么作用，经过查阅资料，搞懂了报错的原因，现在总结一下。<br>
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2016/10/16</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Web安全">Web安全</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SQL注入">SQL注入</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/" >
-            
-                <span>记一次曲折的注入</span>
-        </a>
-        <div class="abstract-content">
-            <p>这两天自己搭了一个Metinfo的站点练手，从网上找了个注入点，手工测试了一下明显的有注入点的存在，先扔到SQLMAP里跑跑看~~</p>
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2016/07/28</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Webshell">Webshell</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SQL注入">SQL注入</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "服务器">服务器</a>
-    
-</div>
-            
-        </div>
-    </article>
     
     <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2019/09/20/Python安全编码——SQL注入/" title= "Python安全编码——SQL注入">
+                    <div class="prevTitle">Python安全编码——SQL注入</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
     
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "tEqAwsQl0o2KjbyKrV8L6CPd-gzGzoHsz",
+        appKey: "VlcSAqNhdr8z6ccGghmmPyVH",
+        placeholder: "Just Go Go",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
 </main>
             <!-- profile -->
             
@@ -587,6 +728,24 @@
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-环境介绍"><span class="toc-number">1.</span> <span class="toc-text">0x01 环境介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-Server配置"><span class="toc-number">2.</span> <span class="toc-text">0x02 Server配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-本地IDE配置"><span class="toc-number">3.</span> <span class="toc-text">0x03 本地IDE配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-1-Debug配置"><span class="toc-number">3.1.</span> <span class="toc-text">0x03-1 Debug配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-1-1-DEBUG-Port"><span class="toc-number">3.1.1.</span> <span class="toc-text">0x03-1.1 DEBUG Port</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-1-2-DBGp-Proxy"><span class="toc-number">3.1.2.</span> <span class="toc-text">0x03-1.2 DBGp Proxy</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-2-Servers配置"><span class="toc-number">3.2.</span> <span class="toc-text">0x03-2 Servers配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-调试"><span class="toc-number">4.</span> <span class="toc-text">0x04 调试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-1-PHPStorm-debug发起调试请求"><span class="toc-number">4.1.</span> <span class="toc-text">0x04-1 PHPStorm debug发起调试请求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-2-浏览器插件发起调试"><span class="toc-number">4.2.</span> <span class="toc-text">0x04-2 浏览器插件发起调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-3-坑-！！"><span class="toc-number">4.3.</span> <span class="toc-text">0x04-3 坑 ！！</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-原理分析"><span class="toc-number">5.</span> <span class="toc-text">0x05 原理分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-远程开发"><span class="toc-number">6.</span> <span class="toc-text">0x06 远程开发</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-总结"><span class="toc-number">7.</span> <span class="toc-text">0x07 总结</span></a></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -1432,6 +1591,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>
