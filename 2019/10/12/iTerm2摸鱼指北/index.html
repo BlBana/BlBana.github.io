@@ -22,7 +22,7 @@
     <meta name="description" content="Web安全 | 代码审计 | PHP | Python ...">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>BlBana&#39;s BlackHouse</title>
+    <title>iTerm2摸鱼指北 · BlBana&#39;s BlackHouse</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -228,12 +228,23 @@
 </head>
 
     
+        <body class="post-body">
+    
     
 <header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >BlBana&#39;s BlackHouse.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">iTerm2摸鱼指北</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>BlBana's BlackHouse.</a>
 </header>
@@ -245,24 +256,74 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            iTerm2摸鱼指北
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+            
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Tools">Tools</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.4k</span>阅读时长: <span class="post-count reading-time">5 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/10/12</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -363,45 +424,140 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/2016/10/08/初玩docker总结/" >
-            
-                <span>初玩docker总结</span>
-        </a>
-        <div class="abstract-content">
-            <h2 id="导语："><a href="#导语：" class="headerlink" title="导语："></a>导语：</h2><p>这两天因为要搭建一个ctf的平台，需要给web题做一个沙盒，就想到了用docker来配置，防止服务器被拿下，第一次玩docker总结了一些注意事项。<br>
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2016/10/08</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "CTF">CTF</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "服务器配置">服务器配置</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "docker">docker</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "沙盒">沙盒</a>
-    
-</div>
-            
-        </div>
+            <main class="main post-page">
+    <article class="article-entry">
+        <blockquote>
+<p>作为一个肥宅程序员，天天都要用到Terminal，怎么能不好好折腾折腾iTerm2这么一个工作利器呢，话不多说，直接走起，让你们见识一些我的小GaiGai ~ 记录一下我这爱折腾的成果</p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><p>自2017年开始用Macbook，终端一直用的是iTerm2，每次拿到新机都是先折腾这个，前前后后也用的比较熟练了，给大家分享一下我的一些iTerm2的使用和配置。</p>
+<h2 id="1-1-iTerm2介绍"><a href="#1-1-iTerm2介绍" class="headerlink" title="1.1 iTerm2介绍"></a>1.1 iTerm2介绍</h2><p>iTerm2是一款完全免费，为MacOS打造的一款终端工具，堪称终端利器，程序员必备。</p>
+<p>下载链接：<a href="https://www.iterm2.com/" target="_blank" rel="noopener">https://www.iterm2.com/</a></p>
+<h2 id="1-2-效果图"><a href="#1-2-效果图" class="headerlink" title="1.2 效果图"></a>1.2 效果图</h2><p>话不多说，先上我终端效果图好吧：</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/iTerm2.png" alt></p>
+<blockquote>
+<p>怎么样，我的小GaiGai是不是很漂亮 ~ 下面看下详细的配置</p>
+</blockquote>
+<h1 id="2-配置走起"><a href="#2-配置走起" class="headerlink" title="2. 配置走起"></a>2. 配置走起</h1><h2 id="2-1-oh-my-zsh"><a href="#2-1-oh-my-zsh" class="headerlink" title="2.1 oh my zsh"></a>2.1 oh my zsh</h2><blockquote>
+<p>iTerm2这么个利器，当然要配置功能强大的shell了，原生zsh配置起来比较容易掉头发，但是已经有了开源的配置oh my zsh提供给我们，只需要简单配置就能随意的更改样式，插件等功能。</p>
+</blockquote>
+<h3 id="2-1-1-安装"><a href="#2-1-1-安装" class="headerlink" title="2.1.1 安装"></a>2.1.1 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># curl</span></span><br><span class="line">sh -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># wget</span></span><br><span class="line">sh -c <span class="string">"<span class="variable">$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)</span>"</span></span><br></pre></td></tr></table></figure>
+<p>安装结束后会自动把shell切换到zsh上，如果你机子上没有安装，可以先把zsh安装上。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install zsh</span><br></pre></td></tr></table></figure>
+<p>之后会在用户根目录下生成<code>.zshrc</code>文件和<code>.oh-my-zsh</code>，前者是配置文件，后者是存放<code>themes，plugins</code>的文件夹。主要还是配置文件，有需要的时候可以安装自定义的插件到<code>.oh-my-zsh</code>目录。</p>
+<h3 id="2-1-2-常用插件"><a href="#2-1-2-常用插件" class="headerlink" title="2.1.2 常用插件"></a>2.1.2 常用插件</h3><h4 id="插件推荐"><a href="#插件推荐" class="headerlink" title="插件推荐"></a>插件推荐</h4><p>这里推荐一下我比较常用的几个插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plugins=(git z zsh-syntax-highlighting zsh-autosuggestions)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Git</strong>：用于在你的主机名后显示git项目信息，比如分支，目录，当前项目状态等信息，可以使用各种git命令缩写；</li>
+<li><strong>z</strong>：用于目录间快速跳转，比如之前进入过<code>~/User/my_project</code>目录后，下一次再想进入的时候，直接<code>z my_project</code>即可，对于较长目录跳转非常的实用；</li>
+<li><strong>zsh-syntax-highlighting</strong>：用于高亮显示常见的命令，比如ls，cd等命令为绿色，输入错误命令时会显示红色；</li>
+<li><strong>zsh-autosuggestions</strong>：当你输入命令的时候，会用灰色显示出你可能想输入的推荐命令，直接键盘<code>→</code>就能补全命令，效率神器。</li>
+</ul>
+<p>这些插件基本上已经oh my zsh自带了，直接在配置文件里找到<strong>plugins</strong>参数在括号里写入想要的插件即可。</p>
+<h4 id="自定义插件安装"><a href="#自定义插件安装" class="headerlink" title="自定义插件安装"></a>自定义插件安装</h4><p>有时候上述几个插件默认没有安装，或者你需要安装第三方插件，自己写插件，可以手动安装，并进行配置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/.oh-my-zsh/custom/plugins</span><br><span class="line">~/.oh-my-zsh/custom/themes</span><br></pre></td></tr></table></figure>
+<p>下载并将插件文件或者主题文件放到上述两个文件夹中，配置文件添加即可。</p>
+<ul>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins" target="_blank" rel="noopener">github插件列表</a></li>
+</ul>
+<h3 id="2-1-3-终端样式"><a href="#2-1-3-终端样式" class="headerlink" title="2.1.3 终端样式"></a>2.1.3 终端样式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=<span class="string">"ys"</span> <span class="comment"># 配置.zshrc</span></span><br></pre></td></tr></table></figure>
+<p>可以在线预览各种主题样式，调个自己喜欢的更改配置即可。没有安装的主题，按照插件安装方式安装即可。</p>
+<ul>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes" target="_blank" rel="noopener">github主题列表</a></li>
+</ul>
+<blockquote>
+<p>整个oh my zsh Shell环境配置没有问题了，接下来看看iTerm2配置。</p>
+</blockquote>
+<h2 id="2-2-iTerm2配置"><a href="#2-2-iTerm2配置" class="headerlink" title="2.2 iTerm2配置"></a>2.2 iTerm2配置</h2><h3 id="2-2-1-Window配置"><a href="#2-2-1-Window配置" class="headerlink" title="2.2.1 Window配置"></a>2.2.1 Window配置</h3><p>配置沉浸式边框，修改默认<code>Theme</code>为<code>Minimal</code></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/window.png" alt></p>
+<h3 id="2-2-2-主题配置"><a href="#2-2-2-主题配置" class="headerlink" title="2.2.2 主题配置"></a>2.2.2 主题配置</h3><p>在我效果图里使用的是，<strong>Dracula</strong>配色，可以自行下载进行配置。</p>
+<ul>
+<li><a href="https://draculatheme.com/iterm/" target="_blank" rel="noopener">Dracula下载地址</a></li>
+</ul>
+<p>解压后导入配置到iTerm2中，红框处选择<code>import</code>导入配置文件<code>Dracula.itermcolors</code>。选择Dracula更换配色。</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/color.png" alt></p>
+<h3 id="2-2-3-字体配置"><a href="#2-2-3-字体配置" class="headerlink" title="2.2.3 字体配置"></a>2.2.3 字体配置</h3><p>我这里字体使用的是M+等宽字体，<a href="https://mplus-fonts.osdn.jp/" target="_blank" rel="noopener">下载链接在此</a>，下载后安装到电脑上。根据需求选择字体，配置粗细，大小等设置。</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/font.png" alt></p>
+<h3 id="2-2-4-背景配置"><a href="#2-2-4-背景配置" class="headerlink" title="2.2.4 背景配置"></a>2.2.4 背景配置</h3><h4 id="透明度"><a href="#透明度" class="headerlink" title="透明度"></a>透明度</h4><p>首先是透明度的配置。在A框处的进度条可以设置透明度，顺便提一下在下面<code>Settings for New Windows</code>可以设置默认窗框长款。</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/background.png" alt></p>
+<h4 id="肥宅快乐小GaiGai"><a href="#肥宅快乐小GaiGai" class="headerlink" title="肥宅快乐小GaiGai"></a>肥宅快乐小GaiGai</h4><p>接下来就是激动人心的环节了，小GaiGai ！！！如上图的B框处勾选启动背景图片，导入你喜欢的小姐姐即可，Mode处可以设置图片的平铺方式。<strong>那么问题来了，哪里能找到漂亮的小姐姐呢，送上大佬们一记壁纸Site。</strong></p>
+<ul>
+<li><a href="https://wallhaven.cc/" target="_blank" rel="noopener">The best wallpapers on the Net!</a></li>
+</ul>
+<p>我的小姐姐都是从这里来的，有图片热榜，分类，图片大小调整，壁纸试用等等功能，肯定能找到你心仪的小GaiGai ~</p>
+<h3 id="2-2-5-Status-Bar配置"><a href="#2-2-5-Status-Bar配置" class="headerlink" title="2.2.5 Status Bar配置"></a>2.2.5 Status Bar配置</h3><p>接下来就是个高逼格的东西了，配置终端的状态栏。可以拉取电量信息，CPU使用率，内存使用率，网络监控，时钟等功能，真乃是装逼利器。</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/status1.png" alt></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/status2.png" alt></p>
+<blockquote>
+<p>目前能想到的配置就是上面这些了，以后有什么新发现再补充上来。</p>
+</blockquote>
+<h1 id="3-使用技巧"><a href="#3-使用技巧" class="headerlink" title="3. 使用技巧"></a>3. 使用技巧</h1><h3 id="3-1-常用快捷键"><a href="#3-1-常用快捷键" class="headerlink" title="3.1 常用快捷键"></a>3.1 常用快捷键</h3><p>推荐几个常用快捷键吧：</p>
+<ul>
+<li>command + d ：垂直分割窗口</li>
+<li>command + shift + d：水平分割窗口</li>
+</ul>
+<p>好了，结束，我就用这两个 。。。</p>
+<h1 id="4-收工"><a href="#4-收工" class="headerlink" title="4. 收工"></a>4. 收工</h1><p>用了两年多的iTerm2，今天终于抽时间整理了已经配置方法，现在云端保存了一份配置文件，以后也懒得折腾了。</p>
+<blockquote>
+<p>菜鸡打滚，溜了 ~</p>
+</blockquote>
+
     </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://blbana.cc">BlBana</a>
+            <p>原文链接：<a href="http://blbana.cc/2019/10/12/iTerm2摸鱼指北/">http://blbana.cc/2019/10/12/iTerm2摸鱼指北/</a>
+            <p>发表日期：<a href="http://blbana.cc/2019/10/12/iTerm2摸鱼指北/">October 12th 2019, 3:50:40 pm</a>
+            <p>更新日期：<a href="http://blbana.cc/2019/10/12/iTerm2摸鱼指北/">October 12th 2019, 5:11:20 pm</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
     
     <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2019/10/11/Pluck-4-7-1-代码执行-Getshell/" title= "Pluck 4.7.1 代码执行 Getshell">
+                    <div class="prevTitle">Pluck 4.7.1 代码执行 Getshell</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
     
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "tEqAwsQl0o2KjbyKrV8L6CPd-gzGzoHsz",
+        appKey: "VlcSAqNhdr8z6ccGghmmPyVH",
+        placeholder: "Just Go Go",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
 </main>
             <!-- profile -->
             
@@ -497,6 +653,24 @@
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-介绍"><span class="toc-number">1.</span> <span class="toc-text">1. 介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-iTerm2介绍"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 iTerm2介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-效果图"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 效果图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-配置走起"><span class="toc-number">2.</span> <span class="toc-text">2. 配置走起</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-oh-my-zsh"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 oh my zsh</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-1-安装"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-2-常用插件"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 常用插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#插件推荐"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">插件推荐</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#自定义插件安装"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">自定义插件安装</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-3-终端样式"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 终端样式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-iTerm2配置"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 iTerm2配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-Window配置"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 Window配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-主题配置"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 主题配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-3-字体配置"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3 字体配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-4-背景配置"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4 背景配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#透明度"><span class="toc-number">2.2.4.1.</span> <span class="toc-text">透明度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#肥宅快乐小GaiGai"><span class="toc-number">2.2.4.2.</span> <span class="toc-text">肥宅快乐小GaiGai</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-5-Status-Bar配置"><span class="toc-number">2.2.5.</span> <span class="toc-text">2.2.5 Status Bar配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-使用技巧"><span class="toc-number">3.</span> <span class="toc-text">3. 使用技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-常用快捷键"><span class="toc-number">3.0.1.</span> <span class="toc-text">3.1 常用快捷键</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-收工"><span class="toc-number">4.</span> <span class="toc-text">4. 收工</span></a></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -1396,6 +1570,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>
