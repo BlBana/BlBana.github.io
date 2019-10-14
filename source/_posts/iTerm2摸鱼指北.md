@@ -133,7 +133,7 @@ ZSH_THEME="ys" # 配置.zshrc
 
 #### 透明度
 
-首先是透明度的配置。在A框处的进度条可以设置透明度，顺便提一下在下面`Settings for New Windows`可以设置默认窗框长款。
+首先是透明度的配置。在A框处的进度条可以设置透明度，顺便提一下在下面`Settings for New Windows`可以设置默认窗口长宽。
 
 ![](https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/iTerm2/background.png)
 
