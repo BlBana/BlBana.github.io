@@ -59,7 +59,7 @@ poc()
 1. Tomcat5
 2. struts 2.3.31
 
-1. 部署的方式比较容易，先安装好Tomcat的服务器，访问http://localhost:8080进行检测环境是否搭建成功。（需在服务器上配置好Java环境，参考连接：[Tomcat环境部署](http://drops.blbana.cc/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/%22Tomcat%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%22)
+1. 部署的方式比较容易，先安装好Tomcat的服务器，访问 http://localhost:8080 进行检测环境是否搭建成功。（需在服务器上配置好Java环境，参考连接：[Tomcat环境部署](http://drops.blbana.cc/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/%22Tomcat%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%22)）
 ![enter image description here](http://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/struts2/1.png)
 
 2. Tomcat的环境搭建完成了以后，可以进入struts2的官网下载存在漏洞的应用程序版本，利用刚才部署环境里的方法将struts2的war包导入到Tomcat的环境当中，访问搭建好的环境如下所示：
