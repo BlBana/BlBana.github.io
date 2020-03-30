@@ -381,6 +381,39 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/2016/07/30/158/" >
+            
+                <span>文件上传漏洞（一）</span>
+        </a>
+        <div class="abstract-content">
+            <div id="page" class="hfeed site"><br><br>### 客户端检测<br><br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>图片上传<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span> = <span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">checkFile</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">var</span> flag = <span class="literal">false</span>;   <span class="comment">//是否可以上传的标志位</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> str = <span class="built_in">document</span>.getElementById(<span class="string">"file"</span>).value;    <span class="comment">//获取文件名</span></span></span><br><span class="line"><span class="actionscript">    str = str.substring(str.lastIndexOf(<span class="string">'.'</span>) + <span class="number">1</span>);  <span class="comment">//获取扩展名</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> arr = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="string">'png'</span>,<span class="string">'jpg'</span>,<span class="string">'gif'</span>,<span class="string">'bmp'</span>);</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++)&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">if</span>(str == arr[i])&#123;</span></span><br><span class="line"><span class="actionscript">            flag = <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">if</span> (!flag) &#123;</span></span><br><span class="line"><span class="actionscript">        alert(<span class="string">'文件不合法！！'</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="actionscript">        alert(<span class="string">'文件上传成功'</span>);</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="actionscript">    <span class="keyword">return</span> flag;</span></span><br><span class="line"><span class="undefined">&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span> = <span class="string">"upload.php"</span> <span class="attr">method</span> = <span class="string">"post"</span> <span class="attr">onsubmit</span>=<span class="string">"return checkFile()"</span> <span class="attr">enctype</span> = <span class="string">"multipart/form-data"</span>&gt;</span>  <span class="comment">&lt;!--在onsubmit事件中验证表单后 必须加上return 否则表单会继续提交--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span> = <span class="string">"file"</span> <span class="attr">name</span> = <span class="string">"file"</span> <span class="attr">id</span> = <span class="string">"file"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span> = <span class="string">"submit"</span> <span class="attr">value</span> = <span class="string">"提交"</span> <span class="attr">name</span> = <span class="string">"submit"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure><br>客户端验证代码如上所示，在测试的过程中，需要注意的问题是，在<strong>表单事件onsubmit</strong>中，需要写上<em>return</em>，此时当在JS代码中验证文件后缀名失败以后，可以阻止表单继续上传，否则无论JS代码如何验证，文件都会成功上传到服务器。<br>
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2016/07/30</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Webshell">Webshell</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Web安全">Web安全</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "上传漏洞">上传漏洞</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/" >
             
                 <span>记一次曲折的注入</span>
@@ -1126,9 +1159,24 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 35
+        Total : 36
         </div>
         <!-- search  -->
         
@@ -1145,6 +1193,11 @@
     
     <div class="archive-year"> 2020 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/30</span><a class="archive-post-title" href= "/2020/03/30/Hexo-Google-Analytics/" >Hexo Google Analytics</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -1374,6 +1427,12 @@
     
         <span class="sidebar-tag-name" data-tags="JavaSec"><span class="iconfont-archer">&#xe606;</span>JavaSec</span>
     
+        <span class="sidebar-tag-name" data-tags="Hexo"><span class="iconfont-archer">&#xe606;</span>Hexo</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="SEO"><span class="iconfont-archer">&#xe606;</span>SEO</span>
+    
         <span class="sidebar-tag-name" data-tags="Python"><span class="iconfont-archer">&#xe606;</span>Python</span>
     
         <span class="sidebar-tag-name" data-tags="MySQL"><span class="iconfont-archer">&#xe606;</span>MySQL</span>
@@ -1482,6 +1541,8 @@ jsonContent:
         <span class="sidebar-category-name" data-categories="随笔"><span class="iconfont-archer">&#xe60a;</span>随笔</span>
     
         <span class="sidebar-category-name" data-categories="Web安全"><span class="iconfont-archer">&#xe60a;</span>Web安全</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
     
         <span class="sidebar-category-name" data-categories="Python"><span class="iconfont-archer">&#xe60a;</span>Python</span>
     
