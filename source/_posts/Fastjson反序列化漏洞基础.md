@@ -3,7 +3,7 @@ title: Fastjson反序列化漏洞基础
 categories:
   - Web安全
 tags:
-  - Web安全
+  - Fastjson反序列化
   - 漏洞分析
   - JavaSec
 toc: true 文章目录

@@ -3,7 +3,7 @@ title: Java SnakeYaml反序列化
 categories:
   - Web安全
 tags:
-  - Web安全
+  - SnakeYaml反序列化
   - 漏洞分析
   - JavaSec
 toc: true 文章目录
