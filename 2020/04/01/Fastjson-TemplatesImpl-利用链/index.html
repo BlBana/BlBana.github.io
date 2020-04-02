@@ -550,7 +550,10 @@ height:50vh;
 <h1 id="安全修复"><a href="#安全修复" class="headerlink" title="安全修复"></a>安全修复</h1><h2 id="补丁分析"><a href="#补丁分析" class="headerlink" title="补丁分析"></a>补丁分析</h2><p>根据<a href="https://github.com/alibaba/fastjson/wiki/security_update_20170315" target="_blank" rel="noopener">官方公告</a>在1.2.25版本之后加入了黑白名单机制，这里跟进分析一下</p>
 <p>在DefaultJSONParser.parseObject中将加载类的<code>TypeUtils.loadClass</code>方法替换为了<code>this.config.checkAutoType()</code>方法</p>
 <p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/27.png" alt="Fastjson%20TemplatesImpl/Untitled%2027.png"></p>
-<p>1.2.25版本中默认情况下，autoTypeSupport为<code>false</code>，<strong>TemplatesImpl利用链会在进入到checkAutoType后被denyList中的黑名单匹配到抛出异常。</strong></p>
+<blockquote>
+<p>1.2.25版本中默认情况下，autoTypeSupport为false（即默认使用白名单）；autoTypeSupport为true时，黑名单存在绕过风险。</p>
+</blockquote>
+<p><strong>TemplatesImpl利用链会在进入到checkAutoType后被denyList中的黑名单匹配到抛出异常。</strong></p>
 <ul>
 <li><p><code>autoTypeSupport</code>为<code>false</code>，先过黑名单过滤，再过白名单过滤，若白名单匹配到就加载此类，否则会报错；这种情况下相对安全一些，黑白名单都未匹配的情况下，会抛出异常。</p>
 </li>
@@ -592,7 +595,7 @@ height:50vh;
             <p>原文作者：<a href="http://drops.blbana.cc">BlBana</a>
             <p>原文链接：<a href="http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/">http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/</a>
             <p>发表日期：<a href="http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/">April 1st 2020, 6:00:28 pm</a>
-            <p>更新日期：<a href="http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/">April 2nd 2020, 12:57:50 am</a>
+            <p>更新日期：<a href="http://drops.blbana.cc/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/">April 2nd 2020, 10:48:10 am</a>
             <p>版权声明：本文采用<a rel="license noopener" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
