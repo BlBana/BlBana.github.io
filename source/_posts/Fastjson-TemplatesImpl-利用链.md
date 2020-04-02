@@ -269,7 +269,9 @@ ConcurrentHashMap extraFieldDeserializers = new ConcurrentHashMap(1, 0.75F, 1);
 
 ![Fastjson%20TemplatesImpl/Untitled%2027.png](https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonTemplatesImpl/27.png)
 
-1.2.25版本中默认情况下，autoTypeSupport为`false`，**TemplatesImpl利用链会在进入到checkAutoType后被denyList中的黑名单匹配到抛出异常。**
+> 1.2.25版本中默认情况下，autoTypeSupport为false（即默认使用白名单）；autoTypeSupport为true时，黑名单存在绕过风险。
+
+**TemplatesImpl利用链会在进入到checkAutoType后被denyList中的黑名单匹配到抛出异常。**
 
 - `autoTypeSupport`为`false`，先过黑名单过滤，再过白名单过滤，若白名单匹配到就加载此类，否则会报错；这种情况下相对安全一些，黑白名单都未匹配的情况下，会抛出异常。
 
